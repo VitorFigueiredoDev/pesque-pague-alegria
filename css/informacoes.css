@@ -38,7 +38,8 @@
 .rental-card small{color:var(--orange);letter-spacing:.13em;font-size:10px;font-weight:800;margin-bottom:9px}
 .rental-card h3{font-size:29px;letter-spacing:-.05em;margin:0 0 10px}
 .rental-card p{font-size:14px;color:var(--muted);line-height:1.7;max-width:380px;margin-bottom:20px}
-.rental-card strong{color:#ff9e5b;font-size:12px;margin-top:auto}
+.rental-card .rental-link{color:#ff9e5b;font-size:12px;font-weight:800;margin-top:auto;display:inline-flex;align-items:center;gap:5px;min-height:30px;border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
+.rental-card .rental-link:hover,.rental-card .rental-link:focus-visible{color:#fff;border-bottom-color:var(--orange)}
 .rules-section{background:#111216;border-top:1px solid var(--stroke);border-bottom:1px solid var(--stroke)}
 .rules-grid{display:grid;grid-template-columns:.75fr 1.25fr;gap:20px;align-items:start}
 .rule-feature{background:var(--orange);color:#111;padding:33px;min-height:350px;position:relative;overflow:hidden}
@@ -79,3 +80,9 @@
 @media(max-width:360px){.hour-row{font-size:11px}.recommend-grid{grid-template-columns:1fr}}
 
 .takehome-note{background:#ff6a0019;border:1px solid #ff6a004a;border-radius:16px;padding:15px 18px;max-width:510px;font-size:13px;color:#ffb77c;line-height:1.6;margin:17px 0 10px}
+
+/* Patch 7 — identificação visual da pesca noturna por dia. */
+.hour-row{flex-wrap:wrap}.hour-row .night-hour-badge{width:100%;text-align:left;color:#ffa96a;font-size:10px;font-weight:800;letter-spacing:.13em;margin-top:-4px}
+.night-schedule-list{display:grid;gap:9px;margin:17px 0}.night-schedule-item{background:#16100d24;border:1px solid #2a120c5c;padding:12px 14px;border-radius:14px;display:grid;grid-template-columns:1fr auto;gap:4px 15px;align-items:center;font-size:14px}
+.night-schedule-item span{font-weight:800;color:#1e0b03}.night-schedule-item small{grid-column:1/-1;font-size:11px;color:#4d2417}
+@media(max-width:650px){.night-schedule-item{grid-template-columns:1fr}.night-schedule-item span{font-size:13px}}

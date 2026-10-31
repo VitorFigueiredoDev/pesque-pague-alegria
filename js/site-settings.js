@@ -40,8 +40,9 @@
       if (actions.length) {contact.className="contact-actions";contact.replaceChildren(...actions);}
     }
     const whatsapp = safeUrl(settings.contact_whatsapp, "contact_whatsapp");
-    const headerCta = document.querySelector(".site-header .header-cta");
-    if (whatsapp && headerCta) { headerCta.href=whatsapp;headerCta.target="_blank";headerCta.rel="noopener noreferrer"; }
+    if (whatsapp) window.setWhatsAppFloatingLink?.(whatsapp);
+    // O botão de contato da navbar foi removido; mantém o atalho flutuante.
+    if (whatsapp) window.updateRentalWhatsappLinks?.(whatsapp);
     const footerLinks = document.querySelector(".footer-links:last-of-type");
     if (footerLinks) {
       footerLinks.querySelectorAll("[data-dynamic-contact]").forEach(node => node.remove());
@@ -68,7 +69,7 @@
       try {
         const {data,error}=await window.db.from("site_content_settings").select("key,value");
         if(error) throw error;
-        (data||[]).forEach(row=>{if(allowed.has(row.key))settings[row.key]=row.value;});
+        (data||[]).forEach(row=>{if(allowed.has(row.key))settings[row.key]=row.key === "contact_whatsapp" && !row.value?.trim() ? fallback.whatsapp || "" : row.value;});
       } catch(error) {console.warn("Configurações não carregadas; mantendo valores padrão:",error.message);}
     }
     apply(settings);

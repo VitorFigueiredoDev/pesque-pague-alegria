@@ -116,6 +116,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const {data,error}=await db.from("site_information").select("*").order("section").order("display_order");if(error)throw error;infos=data||[];
     infosEl.replaceChildren();if(!infos.length){infosEl.innerHTML='<p class="admin-dim">Nenhuma informação cadastrada.</p>';return;}
     infos.forEach(item=>{
+      // Os dados históricos de horários permanecem no Supabase, mas são substituídos pela programação semanal.
+      if(item.section==="horarios" || item.section==="noturna")return;
       const div=document.createElement("article");div.className="admin-list-item";
       div.innerHTML=`<div><small>${html(sections[item.section]||item.section)} · ${item.published?'PUBLICADA':'OCULTA'} · ORDEM ${html(item.display_order)}</small><h4>${html(item.title)}</h4><p>${html(preview(item.content,240))}</p></div><div class="admin-row-actions"><button type="button" data-action="edit">Editar</button><button type="button" data-action="delete" class="danger-button">Excluir</button></div>`;
       div.querySelector('[data-action="edit"]').addEventListener("click",()=>{
@@ -141,6 +143,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {const result=id?await db.from("site_information").update(payload).eq("id",id):await db.from("site_information").insert(payload);if(result.error)throw result.error;resetInfo();await loadInfos();message("Informação salva com sucesso.",true);}catch(e){message(e.message);}
   });
 
+  // Aviso público de proibições — texto editável, protegido pela RLS já existente.
+  const prohibitionForm=document.getElementById("fish-prohibition-form");
+  const prohibitionInput=document.getElementById("fish-prohibition-input");
+  const prohibitionFeedback=document.getElementById("fish-prohibition-feedback");
+  const defaultProhibition="Não são permitidos anzóis com fisga, linhas multifilamento, alicates metálicos de contenção, bebidas de fora ou caixas térmicas trazidas pelos visitantes.";
+  async function loadProhibitionAdmin(){
+    try{
+      const {data,error}=await db.from("site_content_settings").select("value").eq("key","fish_prohibited_notice").maybeSingle();
+      if(error)throw error;
+      prohibitionInput.value=data?.value || defaultProhibition;
+    }catch(error){prohibitionInput.value=defaultProhibition;prohibitionFeedback.textContent="Execute primeiro o SQL do patch 7: "+error.message;}
+  }
+  prohibitionForm.addEventListener("submit",async event=>{
+    event.preventDefault();
+    const value=prohibitionInput.value.trim();
+    if(!value)return;
+    const btn=document.getElementById("fish-prohibition-submit");btn.disabled=true;
+    try{
+      const {error}=await db.from("site_content_settings").upsert({key:"fish_prohibited_notice",value,updated_at:new Date().toISOString()},{onConflict:"key"});
+      if(error)throw error;
+      prohibitionFeedback.textContent="Aviso salvo e publicado na página de peixes.";
+      message("Aviso de proibições atualizado.",true);
+    }catch(error){prohibitionFeedback.textContent="Erro ao salvar: "+error.message;message("Erro ao salvar proibições: "+error.message);}
+    finally{btn.disabled=false;}
+  });
+  await loadProhibitionAdmin();
+
   function resetFish(){document.getElementById("fish-form").reset();document.getElementById("fish-id").value="";}
   document.getElementById("fish-cancel").addEventListener("click",resetFish);
   async function loadFish(){
@@ -153,6 +182,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("fish-id").value=item.id;
         document.getElementById("fish-name").value=item.title;
         document.getElementById("fish-description").value=item.description||"";
+        document.getElementById("fish-bait").value=item.recommended_bait||"";
+        document.getElementById("fish-hook").value=item.recommended_hook||"";
+        document.getElementById("fish-time").value=item.best_fishing_time||"";
+        document.getElementById("fish-weather").value=item.best_weather||"";
         document.getElementById("fish-order").value=item.display_order||0;
         document.getElementById("fish-url").value=item.image_url||"";
         document.getElementById("fish-published").checked=item.published;
@@ -171,7 +204,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const url=document.getElementById("fish-url").value.trim();
     if(url && !/^https:\/\//i.test(url))return message("A foto precisa ter uma URL HTTPS.");
     const slug=title.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
-    const payload={title,description:document.getElementById("fish-description").value.trim(),image_url:url||null,display_order:Number(document.getElementById("fish-order").value)||0,published:document.getElementById("fish-published").checked};
+    const payload={title,description:document.getElementById("fish-description").value.trim(),
+      recommended_bait:document.getElementById("fish-bait").value.trim(),
+      recommended_hook:document.getElementById("fish-hook").value.trim(),
+      best_fishing_time:document.getElementById("fish-time").value.trim(),
+      best_weather:document.getElementById("fish-weather").value.trim(),
+      image_url:url||null,display_order:Number(document.getElementById("fish-order").value)||0,published:document.getElementById("fish-published").checked};
     if(!id)payload.slug=slug || `especie-${Date.now()}`;
     try{const result=id?await db.from("fish_species").update(payload).eq("id",id):await db.from("fish_species").insert(payload);if(result.error)throw result.error;resetFish();await loadFish();message("Espécie salva com sucesso.",true);}catch(e){message("Não foi possível salvar: "+e.message);}
   });

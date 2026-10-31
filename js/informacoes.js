@@ -1,5 +1,26 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const config = window.SITE_CONFIG || {};
+  // Os links de aluguel abrem o WhatsApp com a espécie de equipamento no texto.
+  // O número acompanha a configuração pública editada no painel, sem expor segredos.
+  let rentalWhatsApp = config.whatsapp || "https://wa.me/553497902740";
+  function rentalContactUrl(rawUrl, equipment) {
+    const message = `Olá! Gostaria de consultar a disponibilidade e o valor do aluguel de ${equipment} no Pesque e Pague Alegria.`;
+    try {
+      const parsed = new URL(rawUrl);
+      if (parsed.protocol !== "https:") throw Error("Protocolo inválido");
+      const phone = parsed.hostname === "wa.me" ? parsed.pathname.replace(/\D/g, "") :
+        ["api.whatsapp.com", "www.whatsapp.com"].includes(parsed.hostname) ? (parsed.searchParams.get("phone") || "").replace(/\D/g, "") : "";
+      if (/^\d{10,15}$/.test(phone)) return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    } catch { /* Usa o número oficial de reserva. */ }
+    return `https://wa.me/553497902740?text=${encodeURIComponent(message)}`;
+  }
+  window.updateRentalWhatsappLinks = (newUrl) => {
+    if (typeof newUrl === "string" && newUrl) rentalWhatsApp = newUrl;
+    document.querySelectorAll(".rental-link[data-equipment]").forEach(link => {
+      link.href = rentalContactUrl(rentalWhatsApp, link.dataset.equipment);
+    });
+  };
+  window.updateRentalWhatsappLinks();
   const contact = document.getElementById("contact-actions");
   if (contact) {
     const actions = [];
@@ -21,12 +42,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const of = section => data.filter(row => row.section === section);
     const html = value => String(value ?? "").replace(/[&<>"']/g, s => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"})[s]);
 
-    const horarios = of("horarios");
-    if (horarios.length) document.getElementById("horarios-container").innerHTML = horarios.map(item =>
-      `<div class="hour-row ${/quarta/i.test(item.title) ? 'featured' : ''}"><strong>${html(item.title)}</strong><span>${html(item.content)}</span></div>`).join("");
+    // A programação semanal agora é mantida em weekly_fishing_hours.
+    // Os itens antigos de "horarios" e "noturna" permanecem no banco como histórico,
+    // mas não substituem mais o destaque público administrado pelo novo editor.
 
-    const night = of("noturna");
-    if (night.length) document.getElementById("noturna-container").textContent = night.map(item => item.content).join(" ");
 
     const valores = of("valores");
     const price = valores.find(item => /pesca esportiva/i.test(item.title)) || valores[0];
@@ -44,7 +63,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const aluguel = of("equipamentos");
     if (aluguel.length) document.getElementById("equipamentos-container").innerHTML = aluguel.map((item, i) =>
-      `<article class="rental-card"><span class="rental-icon" aria-hidden="true">${i%2 ? "◉" : "⌁"}</span><small>${String(i+1).padStart(2,"0")} / ALUGUEL</small><h3>${html(item.title)}</h3><p>${html(item.content)}</p><strong>Consulte disponibilidade ↗</strong></article>`).join("");
+      `<article class="rental-card"><span class="rental-icon" aria-hidden="true">${i%2 ? "◉" : "⌁"}</span><small>${String(i+1).padStart(2,"0")} / ALUGUEL</small><h3>${html(item.title)}</h3><p>${html(item.content)}</p><a class="rental-link" href="${rentalContactUrl(rentalWhatsApp,item.title)}" data-equipment="${html(item.title)}" target="_blank" rel="noopener noreferrer" aria-label="Consultar disponibilidade de ${html(item.title)} no WhatsApp">Consulte disponibilidade ↗</a></article>`).join("");
+    window.updateRentalWhatsappLinks();
 
     const rules = of("regras");
     if (rules.length) document.getElementById("regras-container").innerHTML = rules.map(item =>

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="pt-BR"><head><link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#090a0c"><meta name="robots" content="noindex,nofollow">
-<title>Painel administrativo • Etapas 4.4–4.7 | Pesque e Pague Alegria</title>
+<title>Painel administrativo | Pesque e Pague Alegria</title>
 <link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/admin.css">
 </head><body class="admin-app admin-dashboard-page">
 <header class="admin-topbar">
@@ -20,7 +20,7 @@
     <button class="dashboard-tab" type="button" data-tab="personalizar" aria-selected="false">✳ <span>Personalizar site</span></button>
   </nav><div class="side-note">Alterações publicadas aparecem no site. A segurança é controlada pelo Supabase e suas políticas de acesso.</div></aside>
   <div class="dashboard-main">
-    <div class="dashboard-welcome"><div><span class="eyebrow">ADMINISTRAÇÃO</span><h1>Conteúdo do site<span class="orange">.</span></h1><p>Acompanhe seu conteúdo e gerencie o site em um só lugar.</p></div><span class="admin-tag">ATUALIZAÇÃO 4.4–4.7</span></div>
+    <div class="dashboard-welcome"><div><span class="eyebrow">ADMINISTRAÇÃO</span><h1>Conteúdo do site<span class="orange">.</span></h1><p>Acompanhe seu conteúdo e gerencie o site em um só lugar.</p></div><span class="admin-tag">PATCH 7 • PESCA NOTURNA</span></div>
     <div id="admin-status" class="admin-status" role="status" aria-live="polite" hidden></div>
     <section class="dashboard-panel active" id="tab-resumo">
       <div class="admin-panel-title dashboard-overview-title"><div><h2>Visão geral</h2><p>Um resumo dos conteúdos cadastrados no Pesque e Pague Alegria.</p></div><button class="btn btn-outline" id="overview-refresh" type="button">Atualizar números ↻</button></div>
@@ -52,25 +52,46 @@
       <h3 class="admin-subtitle">Imagens cadastradas</h3><div id="admin-gallery-list" class="admin-cards-grid"><p class="admin-dim">Carregando fotos...</p></div>
     </section>
     <section class="dashboard-panel" id="tab-informacoes" hidden>
-      <div class="admin-panel-title"><div><h2>Informações do pesqueiro</h2><p>Edite horários, preços, regras e orientações cadastradas no banco.</p></div></div>
+      <div class="admin-panel-title"><div><h2>Informações do pesqueiro</h2><p>Edite preços, aluguel e regras. Para mudar os horários e a pesca noturna, utilize o editor semanal abaixo.</p></div></div>
       <form id="info-form" class="admin-card admin-form">
         <input type="hidden" id="info-id">
-        <div class="form-grid"><div><label for="info-section">Seção</label><select id="info-section" required><option value="horarios">Horários</option><option value="valores">Valores</option><option value="noturna">Pesca noturna</option><option value="equipamentos">Aluguel</option><option value="regras">Regras</option><option value="preservacao">Preservação</option></select></div><div><label for="info-order">Ordem de exibição</label><input id="info-order" type="number" value="0" min="0" max="9999"></div></div>
+        <div class="form-grid"><div><label for="info-section">Seção</label><select id="info-section" required><option value="valores">Valores</option><option value="equipamentos">Aluguel</option><option value="regras">Regras</option><option value="preservacao">Preservação</option></select></div><div><label for="info-order">Ordem de exibição</label><input id="info-order" type="number" value="0" min="0" max="9999"></div></div>
         <label for="info-title">Título</label><input id="info-title" required maxlength="150" placeholder="Ex.: Terça-feira">
         <label for="info-content">Descrição / conteúdo</label><textarea id="info-content" required rows="3" maxlength="2000" placeholder="Ex.: 09h às 18h"></textarea>
         <label class="checkbox-line"><input id="info-published" type="checkbox" checked> Informação publicada</label>
         <div class="form-actions"><button class="btn btn-orange" type="submit" id="info-submit">Salvar informação ↗</button><button class="btn btn-outline" type="button" id="info-cancel">Limpar formulário</button></div>
       </form>
-      <h3 class="admin-subtitle">Informações cadastradas</h3><div id="admin-info-list" class="admin-list"><p class="admin-dim">Carregando informações...</p></div>
+      <section class="admin-card weekly-hours-admin" aria-labelledby="weekly-hours-title">
+        <div class="admin-panel-title"><div><h3 id="weekly-hours-title">Pesca noturna e horários por dia</h3><p>Marque os dias de pesca noturna, ajuste o horário de abertura/fechamento e salve. Os destaques da Home e de Informações mudam automaticamente.</p></div></div>
+        <form id="weekly-hours-form" class="admin-form">
+          <div id="weekly-hours-grid" class="weekly-hours-grid"><p class="admin-dim">Carregando programação...</p></div>
+          <div class="form-actions"><button type="submit" id="weekly-hours-submit" class="btn btn-orange">Salvar programação semanal ↗</button></div>
+          <p id="weekly-hours-feedback" role="status" aria-live="polite" class="admin-dim"></p>
+          <p class="admin-dim">Os dias marcados permanecem assim até você alterá-los. Esta configuração é semanal, não uma agenda de datas específicas.</p>
+        </form>
+      </section>
+      <h3 class="admin-subtitle">Valores e orientações cadastrados</h3><div id="admin-info-list" class="admin-list"><p class="admin-dim">Carregando informações...</p></div>
     </section>
     <section class="dashboard-panel" id="tab-peixes" hidden>
       <div class="admin-panel-title"><div><h2>Catálogo de peixes</h2><p>Cadastre espécies e, se desejar, inclua uma URL de fotografia pública HTTPS.</p></div></div>
       <form id="fish-form" class="admin-card admin-form"><input type="hidden" id="fish-id">
         <div class="form-grid"><div><label for="fish-name">Nome da espécie</label><input id="fish-name" required maxlength="120" placeholder="Ex.: Pirarara"></div><div><label for="fish-order">Ordem de exibição</label><input id="fish-order" type="number" value="0" min="0" max="9999"></div></div>
         <label for="fish-description">Descrição</label><textarea id="fish-description" rows="3" maxlength="2000" placeholder="Informações verificadas sobre a espécie"></textarea>
+        <h3 class="admin-subtitle">Dicas de pesca exibidas no modal</h3>
+        <p class="admin-dim">Preencha somente com orientações confirmadas pela equipe. Campos vazios aparecerão como “Consulte a equipe”.</p>
+        <div class="form-grid"><div><label for="fish-bait">Tipo de isca</label><input id="fish-bait" maxlength="300" placeholder="Ex.: massa, ração, minhoca..."></div><div><label for="fish-hook">Anzol indicado</label><input id="fish-hook" maxlength="300" placeholder="Ex.: modelo e tamanho, sem fisga"></div></div>
+        <div class="form-grid"><div><label for="fish-time">Melhor horário</label><input id="fish-time" maxlength="300" placeholder="Ex.: manhã, entardecer..."></div><div><label for="fish-weather">Clima recomendado</label><input id="fish-weather" maxlength="300" placeholder="Ex.: tempo nublado..."></div></div>
         <label for="fish-url">URL da fotografia (opcional)</label><input id="fish-url" type="url" placeholder="https://...">
         <label class="checkbox-line"><input id="fish-published" type="checkbox" checked> Espécie publicada</label>
         <div class="form-actions"><button class="btn btn-orange" type="submit">Salvar espécie ↗</button><button type="button" class="btn btn-outline" id="fish-cancel">Limpar formulário</button></div>
+      </form>
+      <form id="fish-prohibition-form" class="admin-card admin-form fish-prohibition-admin">
+        <h3 class="admin-subtitle">! Aviso de proibições na página de peixes</h3>
+        <p class="admin-dim">Este aviso aparece em destaque antes dos cards dos peixes.</p>
+        <label for="fish-prohibition-input">O que é estritamente proibido</label>
+        <textarea id="fish-prohibition-input" maxlength="1200" rows="4" required placeholder="Informe as proibições vigentes no pesqueiro"></textarea>
+        <div class="form-actions"><button type="submit" id="fish-prohibition-submit" class="btn btn-orange">Salvar aviso ↗</button></div>
+        <p id="fish-prohibition-feedback" role="status" aria-live="polite" class="admin-dim"></p>
       </form>
       <h3 class="admin-subtitle">Espécies cadastradas</h3><div id="admin-fish-list" class="admin-list"><p class="admin-dim">Carregando espécies...</p></div>
     </section>
@@ -144,4 +165,5 @@
 <script defer src="../js/supabase.js"></script>
 <script defer src="../js/admin.js"></script>
 <script defer src="../js/site-settings-admin.js"></script>
+<script defer src="../js/weekly-hours-admin.js"></script>
 </body></html>
