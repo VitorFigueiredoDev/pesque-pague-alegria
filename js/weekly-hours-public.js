@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const quick=document.getElementById("home-quick-night");
     if(quick)quick.textContent=nights.length?`${nightDays(nights)}: horário estendido`:"Consulte os horários da semana";
     const pill=document.getElementById("home-night-pill");
-    if(pill)pill.textContent=nights.length?`☾ ${nightDays(nights).toLocaleUpperCase("pt-BR")} À NOITE`:"☾ PRÓXIMAS NOITES";
+    if(pill && pill.dataset.customBadge!=="true")pill.textContent=nights.length?`☾ ${nightDays(nights).toLocaleUpperCase("pt-BR")} À NOITE`:"☾ PRÓXIMAS NOITES";
     const homeDetails=document.getElementById("home-night-chips");
     if(homeDetails){homeDetails.replaceChildren();nights.forEach(item=>{const chip=document.createElement("span");chip.textContent=`◷ ${short[item.day_of_week]} ${status(item)}`;homeDetails.append(chip);});if(!nights.length){const chip=document.createElement("span");chip.textContent="Programação a confirmar";homeDetails.append(chip);}}
     const faq=document.getElementById("home-faq-hours");

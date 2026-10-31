@@ -26,12 +26,17 @@
     ["peixes", "Peixes", href("pages/peixes.html")]
   ];
   const mark = `<svg viewBox="0 0 48 48" width="29" height="29" fill="none" aria-hidden="true"><path d="M5 24c10-13 25-15 35 0-10 15-25 13-35 0Z" stroke="currentColor" stroke-width="3.3" stroke-linejoin="round"/><circle cx="30" cy="22" r="2.3" fill="currentColor"/><path d="m6 24-4-8v16l4-8ZM15 24c5 5 9 7 15 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-  const brand = `<a class="brand" href="${href("index.html")}" aria-label="Pesque e Pague Alegria — início"><span class="brand-mark">${mark}</span><span class="brand-name"><small>PESQUE E PAGUE</small><strong>ALEGRIA<span>.</span></strong></span></a>`;
-  const nav = links.map(([id, label, url]) => `<a href="${url}" ${id===current?'class="active" aria-current="page"':''}>${label}</a>`).join("");
+  const brand = `<a class="brand" href="${href("index.html")}" aria-label="Pesque e Pague Alegria — início"><span class="brand-mark">${mark}</span><img class="brand-logo-uploaded" alt="" hidden><span class="brand-name"><small>PESQUE E PAGUE</small><strong>ALEGRIA<span>.</span></strong></span></a>`;
+  const navItem = ([id, label, url]) => `<a href="${url}" ${id===current?'class="active" aria-current="page"':''}>${label}</a>`;
+  // Desktop: Início | Galeria — LOGO — Peixes | Informações.
+  // Mobile: todos os links ficam em um único menu acessível.
+  const leftNav = [links[0], links[1]].map(navItem).join("");
+  const rightNav = [links[3], links[2]].map(navItem).join("");
+  const mobileNav = [links[0], links[1], links[3], links[2]].map(navItem).join("");
   const header = document.querySelector("#site-header");
   if (header) {
     header.className = "site-header";
-    header.innerHTML = `<div class="header-inner container">${brand}<nav class="nav-links" id="site-nav" aria-label="Navegação principal">${nav}</nav><button id="menu-toggle" class="menu-toggle" type="button" aria-label="Abrir navegação" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span></button></div>`;
+    header.innerHTML = `<div class="header-inner container"><nav class="nav-links nav-links--desktop nav-links--left" aria-label="Navegação principal, lado esquerdo">${leftNav}</nav>${brand}<nav class="nav-links nav-links--desktop nav-links--right" aria-label="Navegação principal, lado direito">${rightNav}</nav><button id="menu-toggle" class="menu-toggle" type="button" aria-label="Abrir navegação" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span></button><nav class="nav-links nav-links--mobile" id="site-nav" aria-label="Navegação principal no celular">${mobileNav}</nav></div>`;
     const btn = header.querySelector("#menu-toggle");
     const navEl = header.querySelector("#site-nav");
     const closeNav = () => { navEl.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); document.body.classList.remove("nav-open"); };

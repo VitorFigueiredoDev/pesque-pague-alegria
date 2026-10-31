@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
  const form=document.getElementById("site-settings-form");
  if(!form)return;
  const db=window.db;
- const keys=["home_features_description","home_night_description","home_gallery_description","home_visit_description","contact_whatsapp","contact_instagram","contact_maps"];
+ const keys=["home_features_description","home_gallery_description","home_visit_description","contact_whatsapp","contact_instagram","contact_maps"];
  const feedback=document.getElementById("site-settings-feedback");
  const button=document.getElementById("site-settings-submit");
  const input=key=>document.getElementById(`setting-${key}`);

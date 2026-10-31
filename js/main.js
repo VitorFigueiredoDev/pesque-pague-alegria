@@ -30,37 +30,55 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function makeBanner(item) {
     const imgUrl = validImage(item.image_url);
-    if (!imgUrl || !String(item.title || "").trim()) return null;
-    const slide = document.createElement("div");
-    slide.className = "hero-slide hero-slide-dynamic";
-    slide.style.backgroundImage = `url(${JSON.stringify(imgUrl)})`;
-    const content = document.createElement("div");
-    content.className = "hero-content";
-    const overline = document.createElement("span");
-    overline.className = "hero-overline";
-    overline.textContent = "PESQUE E PAGUE ALEGRIA • DESTAQUES";
-    const heading = document.createElement("h1");
-    heading.textContent = item.title.trim();
-    const description = document.createElement("p");
-    description.textContent = item.description || "";
-    content.append(overline, heading);
-    if (description.textContent.trim()) content.append(description);
+    const mobileImgUrl = validImage(item.mobile_image_url);
+    if (!imgUrl) return null;
+    const title = String(item.title || "").trim();
+    const subtitle = String(item.description || "").trim();
+    const buttonText = String(item.button_text || "").trim();
     const destination = safeButtonPath(item.button_url);
-    if (destination && item.button_text && String(item.button_text).trim()) {
-      const actions = document.createElement("div");
-      actions.className = "hero-actions";
-      const link = document.createElement("a");
-      link.className = "btn btn-orange";
-      link.href = destination;
-      link.textContent = item.button_text.trim() + " ↗";
-      if (/^https:\/\//i.test(destination)) {
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
+    const hasButton = Boolean(buttonText && destination);
+    const onlyArtwork = !title && !subtitle && !hasButton;
+
+    const slide = document.createElement("div");
+    slide.className = onlyArtwork ? "hero-slide hero-slide-dynamic hero-slide-image-only" : "hero-slide hero-slide-dynamic";
+    slide.style.setProperty("--banner-desktop", `url(${JSON.stringify(imgUrl)})`);
+    if (mobileImgUrl) slide.style.setProperty("--banner-mobile", `url(${JSON.stringify(mobileImgUrl)})`);
+    // Sem título, a arte continua acessível por uma descrição neutra do slide.
+    if (onlyArtwork) slide.setAttribute("aria-label", "Arte promocional do Pesque e Pague Alegria");
+
+    if (!onlyArtwork) {
+      const content = document.createElement("div");
+      content.className = "hero-content";
+      const overline = document.createElement("span");
+      overline.className = "hero-overline";
+      overline.textContent = "PESQUE E PAGUE ALEGRIA • DESTAQUES";
+      content.append(overline);
+      if (title) {
+        const heading = document.createElement("h1");
+        heading.textContent = title;
+        content.append(heading);
       }
-      actions.append(link);
-      content.append(actions);
+      if (subtitle) {
+        const description = document.createElement("p");
+        description.textContent = subtitle;
+        content.append(description);
+      }
+      if (hasButton) {
+        const actions = document.createElement("div");
+        actions.className = "hero-actions";
+        const link = document.createElement("a");
+        link.className = "btn btn-orange";
+        link.href = destination;
+        link.textContent = buttonText + " ↗";
+        if (/^https:\/\//i.test(destination)) {
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+        }
+        actions.append(link);
+        content.append(actions);
+      }
+      slide.append(content);
     }
-    slide.append(content);
     return slide;
   }
   function showSlide(index, announce = false) {
@@ -107,11 +125,15 @@ document.addEventListener("DOMContentLoaded", () => {
   async function loadHomeBanners() {
     if (!hero || !window.db) return;
     try {
-      const { data, error } = await window.db.from("home_banners")
-        .select("title,description,image_url,button_text,button_url,display_order")
+      const query = select => window.db.from("home_banners")
+        .select(select)
         .eq("published", true)
         .order("display_order", { ascending: true })
         .order("created_at", { ascending: true });
+      let { data, error } = await query("title,description,image_url,mobile_image_url,button_text,button_url,display_order");
+      if (error && /mobile_image_url|column/i.test(error.message || "")) {
+        ({ data, error } = await query("title,description,image_url,button_text,button_url,display_order"));
+      }
       if (error) throw error;
       if (!data?.length) return;
       const newSlides = data.map(makeBanner).filter(Boolean);

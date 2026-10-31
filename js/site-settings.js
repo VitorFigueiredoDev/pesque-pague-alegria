@@ -2,6 +2,8 @@
 (() => {
   const allowed = new Set([
     "home_features_description", "home_night_description", "home_gallery_description", "home_visit_description",
+    "home_night_title_first", "home_night_title_second", "home_night_image_caption",
+    "home_night_image_url", "home_night_button_text", "home_night_button_url", "home_night_badge",
     "contact_whatsapp", "contact_instagram", "contact_maps"
   ]);
   const safeUrl = (raw, kind) => {
@@ -24,6 +26,36 @@
       const key = node.dataset.siteSetting;
       if (allowed.has(key) && typeof settings[key] === "string" && settings[key].trim()) node.textContent = settings[key].trim();
     });
+    const extraText = [
+      ["home_night_title_first","home-night-title-first"],
+      ["home_night_title_second","home-night-title-second"],
+      ["home_night_image_caption","home-night-image-caption"]
+    ];
+    extraText.forEach(([key,id])=>{
+      const el=document.getElementById(id);
+      if(el && typeof settings[key]==="string" && settings[key].trim())el.textContent=settings[key].trim();
+    });
+    const art=document.getElementById("home-night-art");
+    const artUrl=safeUrl(settings.home_night_image_url,"home_night_image_url");
+    if(art && artUrl){
+      art.style.backgroundImage=`linear-gradient(0deg,#0b0b0bba,transparent 60%),url(${JSON.stringify(artUrl)})`;
+      art.setAttribute("aria-label","Imagem da pesca noturna do Pesque e Pague Alegria");
+    }
+    const badge=document.getElementById("home-night-pill");
+    if(badge && settings.home_night_badge?.trim()){
+      badge.dataset.customBadge="true";
+      badge.textContent=settings.home_night_badge.trim();
+    }
+    const nightLink=document.getElementById("home-night-button");
+    if(nightLink){
+      const text=settings.home_night_button_text?.trim();
+      const href=settings.home_night_button_url?.trim();
+      if(text)nightLink.textContent=text;
+      if(href && (/^https:\/\//i.test(href) || /^(?:pages\/|index\.html|#)[a-zA-Z0-9_./#?=&%-]*$/.test(href)) && !href.includes("..")){
+        nightLink.href=href;
+        if(/^https:\/\//i.test(href)){nightLink.target="_blank";nightLink.rel="noopener noreferrer";}
+      }
+    }
     const links = [
       ["contact_whatsapp","WhatsApp ↗"], ["contact_instagram","Instagram ↗"], ["contact_maps","Localização ↗"]
     ];

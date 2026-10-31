@@ -320,11 +320,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     id:document.getElementById("banner-id"),title:document.getElementById("banner-title"),
     description:document.getElementById("banner-description"),order:document.getElementById("banner-order"),
     file:document.getElementById("banner-file"),image:document.getElementById("banner-image-url"),
+    mobileFile:document.getElementById("banner-mobile-file"),mobileImage:document.getElementById("banner-mobile-image-url"),
     buttonText:document.getElementById("banner-button-text"),buttonUrl:document.getElementById("banner-button-url"),
     published:document.getElementById("banner-published"),submit:document.getElementById("banner-submit")
   };
   const bannerPreview = document.getElementById("banner-preview-image");
   const bannerPreviewBox = document.getElementById("banner-preview-box");
+  const bannerMobilePreview=document.getElementById("banner-mobile-preview-image");
+  const bannerMobilePreviewBox=document.getElementById("banner-mobile-preview-box");
   function imageHttps(url) {try{return new URL(url).protocol === "https:";}catch{return false;}}
   function safeBannerLink(input) {
     if(!input)return true;
@@ -337,7 +340,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     bannerPreview.removeAttribute("src");bannerPreviewBox.hidden=true;
   }
   function showBannerPreview(url,blob=false){clearBannerPreview();if(!url)return;bannerPreview.src=url;bannerPreviewBox.hidden=false;if(blob)bannerPreview.dataset.blob=url;}
-  function resetBanner(){bannerForm.reset();bannerFields.id.value="";bannerFields.order.value="0";bannerFields.published.checked=true;bannerFields.submit.textContent="Salvar banner ↗";clearBannerPreview();}
+  function clearMobileBannerPreview(){
+    if(bannerMobilePreview.dataset.blob){URL.revokeObjectURL(bannerMobilePreview.dataset.blob);delete bannerMobilePreview.dataset.blob;}
+    bannerMobilePreview.removeAttribute("src");bannerMobilePreviewBox.hidden=true;
+  }
+  function showMobileBannerPreview(url,blob=false){clearMobileBannerPreview();if(!url)return;bannerMobilePreview.src=url;bannerMobilePreviewBox.hidden=false;if(blob)bannerMobilePreview.dataset.blob=url;}
+  function resetBanner(){bannerForm.reset();bannerFields.id.value="";bannerFields.order.value="0";bannerFields.published.checked=true;bannerFields.submit.textContent="Salvar banner ↗";clearBannerPreview();clearMobileBannerPreview();}
   document.getElementById("banner-cancel").addEventListener("click",resetBanner);
   bannerFields.file.addEventListener("change",()=>{
     const file=bannerFields.file.files[0];
@@ -350,28 +358,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     const url=bannerFields.image.value.trim();
     if(imageHttps(url))showBannerPreview(url); else clearBannerPreview();
   });
+  bannerFields.mobileFile.addEventListener("change",()=>{
+    const file=bannerFields.mobileFile.files[0];
+    if(file && ["image/jpeg","image/png","image/webp"].includes(file.type))showMobileBannerPreview(URL.createObjectURL(file),true);
+    else if(imageHttps(bannerFields.mobileImage.value.trim()))showMobileBannerPreview(bannerFields.mobileImage.value.trim());
+    else clearMobileBannerPreview();
+  });
+  bannerFields.mobileImage.addEventListener("input",()=>{
+    if(bannerFields.mobileFile.files.length)return;
+    const url=bannerFields.mobileImage.value.trim();
+    if(imageHttps(url))showMobileBannerPreview(url);else clearMobileBannerPreview();
+  });
   async function loadBanners(){
-    const {data,error}=await db.from("home_banners").select("id,title,description,image_url,button_text,button_url,display_order,published").order("display_order",{ascending:true}).order("created_at",{ascending:true});
+    const {data,error}=await db.from("home_banners").select("id,title,description,image_url,mobile_image_url,button_text,button_url,display_order,published").order("display_order",{ascending:true}).order("created_at",{ascending:true});
     if(error)throw error;
     banners=data||[];bannerList.replaceChildren();
     if(!banners.length){bannerList.innerHTML='<p class="admin-dim">Ainda não há banners cadastrados.</p>';return;}
     banners.forEach(item=>{
       const article=document.createElement("article");article.className="admin-list-item banner-admin-item";
       const url=imageHttps(item.image_url)?item.image_url:"";
-      article.innerHTML=`<div class="banner-list-detail">${url?`<img src="${html(url)}" alt="" loading="lazy">`:""}<div><small>${item.published?"PUBLICADO":"OCULTO"} · ORDEM ${html(item.display_order)}</small><h4>${html(item.title)}</h4><p>${html(preview(item.description,110))}</p></div></div><div class="admin-row-actions"><button type="button" data-action="edit">Editar</button><button type="button" data-action="toggle">${item.published?"Ocultar":"Publicar"}</button><button type="button" data-action="delete" class="danger-button">Excluir</button></div>`;
+      article.innerHTML=`<div class="banner-list-detail">${url?`<img src="${html(url)}" alt="" loading="lazy">`:""}<div><small>${item.published?"PUBLICADO":"OCULTO"} · ORDEM ${html(item.display_order)}</small><h4>${html(item.title?.trim() || "Arte sem título")}</h4><p>${html(preview(item.description,110))}</p><small>${item.mobile_image_url?"✓ Arte mobile cadastrada":"Sem arte mobile: usa imagem desktop"}</small></div></div><div class="admin-row-actions"><button type="button" data-action="edit">Editar</button><button type="button" data-action="toggle">${item.published?"Ocultar":"Publicar"}</button><button type="button" data-action="delete" class="danger-button">Excluir</button></div>`;
       article.querySelector('[data-action="edit"]').addEventListener("click",()=>{
-        bannerFields.id.value=item.id;bannerFields.title.value=item.title;bannerFields.description.value=item.description||"";
+        bannerFields.id.value=item.id;bannerFields.title.value=item.title||"";bannerFields.description.value=item.description||"";
         bannerFields.image.value=item.image_url||"";bannerFields.file.value="";
+        bannerFields.mobileImage.value=item.mobile_image_url||"";bannerFields.mobileFile.value="";
         bannerFields.buttonText.value=item.button_text||"";bannerFields.buttonUrl.value=item.button_url||"";
         bannerFields.order.value=item.display_order??0;bannerFields.published.checked=item.published;
         bannerFields.submit.textContent="Atualizar banner ↗";showBannerPreview(url);
+        showMobileBannerPreview(imageHttps(item.mobile_image_url)?item.mobile_image_url:"");
         bannerForm.scrollIntoView({behavior:"smooth",block:"start"});
       });
       article.querySelector('[data-action="toggle"]').addEventListener("click",async()=>{
         try{const {error}=await db.from("home_banners").update({published:!item.published}).eq("id",item.id);if(error)throw error;await loadBanners();message("Visibilidade do banner atualizada.",true);}catch(e){message(e.message);}
       });
       article.querySelector('[data-action="delete"]').addEventListener("click",async()=>{
-        if(!confirm(`Excluir o banner “${item.title}”?`))return;
+        if(!confirm(`Excluir o banner “${item.title?.trim() || "Arte sem título"}”?`))return;
         try{const {error}=await db.from("home_banners").delete().eq("id",item.id);if(error)throw error;resetBanner();await loadBanners();message("Banner excluído do banco.",true);}catch(e){message(e.message);}
       });
       bannerList.append(article);
@@ -383,29 +404,45 @@ document.addEventListener("DOMContentLoaded", async () => {
     const title=bannerFields.title.value.trim();
     const file=bannerFields.file.files[0];
     const providedImage=bannerFields.image.value.trim();
+    const mobileFile=bannerFields.mobileFile.files[0];
+    const providedMobileImage=bannerFields.mobileImage.value.trim();
     const buttonUrl=bannerFields.buttonUrl.value.trim();
-    if(!title)return message("Informe o título do banner.");
     if(providedImage && !imageHttps(providedImage))return message("A imagem deve ter uma URL HTTPS.");
+    if(providedMobileImage && !imageHttps(providedMobileImage))return message("A imagem mobile deve ter uma URL HTTPS.");
     if(!safeBannerLink(buttonUrl))return message("Destino inválido. Use HTTPS ou um caminho interno do site.");
     const allowed={"image/jpeg":"jpg","image/png":"png","image/webp":"webp"};
     if(file && !allowed[file.type])return message("Use uma imagem JPG, PNG ou WebP.");
+    if(mobileFile && !allowed[mobileFile.type])return message("A arte mobile deve ser JPG, PNG ou WebP.");
+    if(mobileFile && mobileFile.size>6*1024*1024)return message("A arte mobile não pode ultrapassar 6 MB.");
     if(file && file.size>6*1024*1024)return message("Imagem maior que 6 MB.");
-    if(!file && !providedImage)return message("Selecione uma imagem ou informe uma URL HTTPS.");
-    bannerFields.submit.disabled=true;bannerFields.submit.textContent=file?"Enviando imagem...":"Salvando banner...";
-    let uploadPath=null;
+    if(!file && !providedImage)return message("A imagem é obrigatória. Envie um arquivo ou informe uma URL HTTPS.");
+    bannerFields.submit.disabled=true;bannerFields.submit.textContent=(file||mobileFile)?"Enviando imagens...":"Salvando banner...";
+    let uploadPaths=[];
     try{
       let image_url=providedImage;
+      let mobile_image_url=providedMobileImage||null;
       if(file){
-        uploadPath=`banners/${Date.now()}-${Math.random().toString(36).slice(2,12)}.${allowed[file.type]}`;
+        const uploadPath=`banners/${Date.now()}-${Math.random().toString(36).slice(2,12)}.${allowed[file.type]}`;
         const {error:uploadError}=await db.storage.from("galeria").upload(uploadPath,file,{contentType:file.type,upsert:false});
         if(uploadError)throw uploadError;
+        uploadPaths.push(uploadPath);
         image_url=db.storage.from("galeria").getPublicUrl(uploadPath).data.publicUrl;
       }
-      const payload={title,description:bannerFields.description.value.trim(),image_url,button_text:bannerFields.buttonText.value.trim()||null,button_url:buttonUrl||null,display_order:Number(bannerFields.order.value)||0,published:bannerFields.published.checked};
+      if(mobileFile){
+        const mobilePath=`banners/mobile-${Date.now()}-${Math.random().toString(36).slice(2,12)}.${allowed[mobileFile.type]}`;
+        const {error:uploadError}=await db.storage.from("galeria").upload(mobilePath,mobileFile,{contentType:mobileFile.type,upsert:false});
+        if(uploadError)throw uploadError;
+        uploadPaths.push(mobilePath);
+        mobile_image_url=db.storage.from("galeria").getPublicUrl(mobilePath).data.publicUrl;
+      }
+      const payload={title,description:bannerFields.description.value.trim(),image_url,mobile_image_url,button_text:bannerFields.buttonText.value.trim()||null,button_url:buttonUrl||null,display_order:Number(bannerFields.order.value)||0,published:bannerFields.published.checked};
       const result=id?await db.from("home_banners").update(payload).eq("id",id):await db.from("home_banners").insert(payload);
       if(result.error)throw result.error;
-      uploadPath=null;resetBanner();await loadBanners();message("Banner salvo com sucesso.",true);
-    }catch(e){if(uploadPath)await db.storage.from("galeria").remove([uploadPath]);message("Erro ao salvar banner: "+e.message);}
+      uploadPaths=[];resetBanner();await loadBanners();message("Banner salvo com sucesso.",true);
+    }catch(e){
+      if(uploadPaths.length)await db.storage.from("galeria").remove(uploadPaths);
+      message("Erro ao salvar banner: "+e.message+(String(e.message).includes("mobile_image_url")?" — Execute a migração SQL do Patch 8.4 antes de salvar.":""));
+    }
     finally{bannerFields.submit.disabled=false;bannerFields.submit.textContent=bannerFields.id.value?"Atualizar banner ↗":"Salvar banner ↗";}
   });
   try{await loadBanners();}catch(error){message("Falha ao carregar banners: "+error.message);}

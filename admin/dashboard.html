@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/admin.css">
 </head><body class="admin-app admin-dashboard-page">
 <header class="admin-topbar">
-  <a class="brand" href="../index.html"><span class="brand-mark">✳</span><span class="brand-name"><small>PESQUE E PAGUE</small><strong>ALEGRIA<span>.</span></strong></span></a>
+  <a class="brand" href="../index.html"><span class="brand-mark">✳</span><img class="brand-logo-uploaded" alt="" hidden><span class="brand-name"><small>PESQUE E PAGUE</small><strong>ALEGRIA<span>.</span></strong></span></a>
   <div class="admin-user"><span id="admin-email"></span><a href="../index.html" class="admin-top-link">Ver site ↗</a><button type="button" id="logout" class="admin-top-link">Sair</button></div>
 </header>
 <div id="admin-lock" class="admin-lock"><div class="loading-ring"></div><p id="admin-lock-message">Verificando autorização de acesso...</p></div>
@@ -17,6 +17,7 @@
     <button class="dashboard-tab" type="button" data-tab="peixes" aria-selected="false">◈ <span>Peixes</span></button>
     <button class="dashboard-tab" type="button" data-tab="parceiros" aria-selected="false">◇ <span>Parceiros</span></button>
     <button class="dashboard-tab banner-tab" type="button" data-tab="banners" aria-selected="false">▰ <span>Banners</span></button>
+    <button class="dashboard-tab" type="button" data-tab="design-system" aria-selected="false">▤ <span>Design system</span></button>
     <button class="dashboard-tab" type="button" data-tab="personalizar" aria-selected="false">✳ <span>Personalizar site</span></button>
   </nav><div class="side-note">Alterações publicadas aparecem no site. A segurança é controlada pelo Supabase e suas políticas de acesso.</div></aside>
   <div class="dashboard-main">
@@ -70,6 +71,31 @@
           <p class="admin-dim">Os dias marcados permanecem assim até você alterá-los. Esta configuração é semanal, não uma agenda de datas específicas.</p>
         </form>
       </section>
+      <section class="admin-card night-feature-admin" aria-labelledby="night-feature-title">
+        <div class="admin-panel-title"><div><h3 id="night-feature-title">Destaque da pesca noturna na Home</h3><p>Personalize a seção “Mais tempo. Mais história.”, incluindo a fotografia, os títulos e o botão. Os dias e horários continuam automáticos pelo editor semanal acima.</p></div></div>
+        <form id="night-feature-form" class="admin-form">
+          <div class="form-grid">
+            <div><label for="night-feature-title-first">Título — primeira linha</label><input id="night-feature-title-first" maxlength="100" placeholder="Mais tempo."></div>
+            <div><label for="night-feature-title-second">Título em laranja — segunda linha</label><input id="night-feature-title-second" maxlength="100" placeholder="Mais história."></div>
+          </div>
+          <label for="night-feature-description">Descrição abaixo do título</label><textarea id="night-feature-description" maxlength="500" rows="3" placeholder="Em noites especiais, a pescaria continua depois do pôr do sol..."></textarea>
+          <label for="night-feature-caption">Legenda sobre a foto</label><input id="night-feature-caption" maxlength="100" placeholder="NOITE NO LAGO">
+          <label for="night-feature-badge">Texto do selo (opcional)</label><input id="night-feature-badge" maxlength="110" placeholder="Deixe vazio para atualizar automaticamente os dias de pesca noturna">
+          <p class="admin-dim">Sem texto personalizado, o selo mostra automaticamente os dias marcados como pesca noturna. Se você definir um texto fixo, ele substituirá os dias do selo, mas os horários continuarão atualizando abaixo.</p>
+          <div class="form-grid">
+            <div><label for="night-feature-button-text">Texto do botão</label><input id="night-feature-button-text" maxlength="65" placeholder="Entenda como funciona ↗"></div>
+            <div><label for="night-feature-button-url">Link do botão (HTTPS ou caminho interno)</label><input id="night-feature-button-url" maxlength="500" placeholder="pages/informacoes.html#noturna"></div>
+          </div>
+          <h3 class="admin-subtitle">Foto da seção</h3>
+          <p class="admin-dim">Envie uma imagem horizontal (recomendado 1200 × 900 px) ou informe uma URL. Para manter a foto atual, deixe o upload vazio.</p>
+          <label for="night-feature-file">Enviar foto (JPG, PNG ou WebP, até 6 MB)</label><input id="night-feature-file" type="file" accept="image/jpeg,image/png,image/webp">
+          <label for="night-feature-image-url">Ou URL HTTPS da fotografia</label><input id="night-feature-image-url" type="url" placeholder="https://...">
+          <div class="night-feature-preview" id="night-feature-preview" hidden><img id="night-feature-preview-img" alt="Prévia da foto da seção noturna"></div>
+          <p class="admin-dim">Para restaurar a foto padrão, limpe a URL e salve sem enviar arquivo.</p>
+          <div class="form-actions"><button id="night-feature-submit" class="btn btn-orange" type="submit">Salvar destaque da Home ↗</button></div>
+          <p id="night-feature-feedback" class="admin-dim" role="status" aria-live="polite"></p>
+        </form>
+      </section>
       <h3 class="admin-subtitle">Valores e orientações cadastrados</h3><div id="admin-info-list" class="admin-list"><p class="admin-dim">Carregando informações...</p></div>
     </section>
     <section class="dashboard-panel" id="tab-peixes" hidden>
@@ -96,22 +122,28 @@
       <h3 class="admin-subtitle">Espécies cadastradas</h3><div id="admin-fish-list" class="admin-list"><p class="admin-dim">Carregando espécies...</p></div>
     </section>
     <section class="dashboard-panel" id="tab-banners" hidden>
-      <div class="admin-panel-title"><div><h2>Banners da Home</h2><p>Prepare os slides principais com imagens, textos, links e ordem de exibição.</p></div></div>
+      <div class="admin-panel-title"><div><h2>Banners da Home</h2><p>Envie uma arte pronta ou crie um banner com título, descrição e botão. Somente a imagem é obrigatória.</p></div></div>
       <form id="banner-form" class="admin-card admin-form">
         <input id="banner-id" type="hidden">
         <div class="form-grid">
-          <div><label for="banner-title">Título</label><input id="banner-title" required maxlength="150" placeholder="Ex.: Sua próxima aventura começa aqui"></div>
-          <div><label for="banner-order">Ordem de exibição</label><input id="banner-order" type="number" min="0" max="9999" value="0"></div>
+          <div><label for="banner-title">Título (opcional)</label><input id="banner-title" maxlength="150" placeholder="Ex.: Sua próxima aventura começa aqui"></div>
+          <div><label for="banner-order">Ordem de exibição (opcional)</label><input id="banner-order" type="number" min="0" max="9999" value="0"></div>
         </div>
-        <label for="banner-description">Descrição</label><textarea id="banner-description" maxlength="500" rows="3" placeholder="Uma frase convidativa sobre a experiência"></textarea>
-        <label for="banner-file">Imagem (JPG, PNG ou WebP, até 6 MB)</label><input id="banner-file" type="file" accept="image/jpeg,image/png,image/webp">
+        <label for="banner-description">Descrição (opcional)</label><textarea id="banner-description" maxlength="500" rows="3" placeholder="Uma frase convidativa sobre a experiência"></textarea>
+        <h3 class="admin-subtitle">Imagem para computador · 16:9</h3><p class="admin-dim">Recomendado 1920 × 1080 px. Esta imagem é obrigatória; também será usada em celulares se você não enviar a arte vertical.</p><label for="banner-file">Imagem desktop (obrigatória: arquivo ou URL; JPG, PNG ou WebP, até 6 MB)</label><input id="banner-file" type="file" accept="image/jpeg,image/png,image/webp">
         <label for="banner-image-url">Ou URL HTTPS da imagem</label><input id="banner-image-url" type="url" placeholder="https://...">
-        <div id="banner-preview-box" class="banner-preview-box" hidden><img id="banner-preview-image" alt="Prévia do banner"></div>
+        <div id="banner-preview-box" class="banner-preview-box" hidden><img id="banner-preview-image" alt="Prévia do banner desktop"></div>
+        <h3 class="admin-subtitle">Imagem para celular · 9:16 (opcional)</h3>
+        <p class="admin-dim">Reaproveite os Stories do Instagram (recomendado 1080 × 1920 px). A arte mobile aparece automaticamente em telas de até 767 px. Se não houver, o site usa a imagem desktop.</p>
+        <label for="banner-mobile-file">Arte vertical para celular (JPG, PNG ou WebP, até 6 MB)</label><input id="banner-mobile-file" type="file" accept="image/jpeg,image/png,image/webp">
+        <label for="banner-mobile-image-url">Ou URL HTTPS da imagem vertical (opcional)</label><input id="banner-mobile-image-url" type="url" placeholder="https://...">
+        <div id="banner-mobile-preview-box" class="banner-preview-box banner-preview-mobile" hidden><img id="banner-mobile-preview-image" alt="Prévia da arte vertical para celular"></div>
+        <p class="admin-dim">Ao editar um banner, apague a URL mobile e salve para remover a versão vertical. Não exclui o arquivo antigo do Storage.</p>
         <div class="form-grid">
           <div><label for="banner-button-text">Texto do botão (opcional)</label><input id="banner-button-text" maxlength="55" placeholder="Ex.: Saiba mais"></div>
           <div><label for="banner-button-url">Destino do botão (opcional)</label><input id="banner-button-url" maxlength="500" placeholder="pages/informacoes.html"></div>
         </div>
-        <p class="admin-dim">Links aceitos: caminho interno do site ou endereço HTTPS.</p>
+        <p class="admin-dim">Se deixar título, descrição e botão vazios, apenas a arte será exibida, sem texto automático ou filtro escuro. Preencha texto e destino do botão juntos para exibir o botão. Links aceitos: caminho interno ou HTTPS.</p>
         <label class="checkbox-line"><input id="banner-published" type="checkbox" checked> Publicado</label>
         <div class="form-actions"><button type="submit" id="banner-submit" class="btn btn-orange">Salvar banner ↗</button><button type="button" id="banner-cancel" class="btn btn-outline">Limpar formulário</button></div>
       </form>
@@ -142,12 +174,33 @@
       <h3 class="admin-subtitle">Parceiros cadastrados</h3>
       <div id="admin-partner-list" class="admin-list"><p class="admin-dim">Carregando parceiros...</p></div>
     </section>
+
+    <section class="dashboard-panel" id="tab-design-system" hidden>
+      <div class="admin-panel-title"><div><h2>Design system</h2><p>Guia técnico e visual do Pesque e Pague Alegria — cores, tipografia, componentes, imagens e padrões de publicação.</p></div></div>
+      <div class="ds-grid">
+        <article class="admin-card ds-card"><h3>01 / Identidade e cores</h3><p>Dark mode com acentos laranja. Valores reais definidos em <code>css/style.css</code>.</p><div class="ds-swatches">
+          <div><i style="background:#090a0c"></i><strong>Fundo</strong><code>#090A0C</code></div><div><i style="background:#131417"></i><strong>Superfície</strong><code>#131417</code></div><div><i style="background:#1b1c21"></i><strong>Superfície 2</strong><code>#1B1C21</code></div><div><i style="background:#ff6a00"></i><strong>Laranja</strong><code>#FF6A00</code></div><div><i style="background:#ff9947"></i><strong>Laranja claro</strong><code>#FF9947</code></div><div><i style="background:#ffffff"></i><strong>Texto</strong><code>#FFFFFF</code></div><div><i style="background:#aaabb4"></i><strong>Texto secundário</strong><code>#AAABB4</code></div><div><i style="background:#25262c"></i><strong>Superfície 3</strong><code>#25262C</code></div>
+        </div><p class="admin-dim">Bordas: branco com opacidade ~9% (<code>--stroke: #ffffff18</code>) e ~16% (<code>--stroke-strong: #ffffff28</code>).</p></article>
+        <article class="admin-card ds-card"><h3>02 / Tipografia</h3><p class="ds-title-sample">Bricolage Grotesque</p><p>Para títulos e chamadas: pesos 500–800, letras compactas. Títulos de seção responsivos entre 37 e 64 px.</p><p class="ds-body-sample">DM Sans — corpo, botões, campos e navegação.</p><p>Texto padrão de leitura: aproximadamente 14–16 px; botões 14 px / 800; legendas 11–13 px. Fontes importadas do Google Fonts.</p></article>
+        <article class="admin-card ds-card"><h3>03 / Componentes</h3><div class="ds-demo"><button class="btn btn-orange" type="button">Botão principal</button><button class="btn btn-outline" type="button">Botão secundário</button><span class="pill">Destaque</span></div><p>Botões: altura mínima 52 px e raio 17 px. Cards: superfície escura, borda sutil e raio padrão 26 px. Campos usam contraste alto e foco laranja.</p><p>Modais de peixes: até 560 px de largura e raio 31 px. Cards do catálogo: 4 colunas em telas grandes e grade adaptativa no celular.</p></article>
+        <article class="admin-card ds-card"><h3>04 / Layout e responsividade</h3><p>Container máximo: <strong>1240 px</strong>; margens laterais de 48 px em desktop. Seções com cerca de 106 px de espaçamento vertical.</p><p>Navbar fixa no topo: 114 px no desktop, 94 px em tablets/celulares e 86 px em telas muito pequenas (até 440 px). Links no desktop: Início/Galeria à esquerda, logo centralizada (até 91 px de altura), Peixes/Informações à direita. No celular, logo centralizada e links dentro do menu. O CSS adaptativo está em <code>css/responsive.css</code>.</p><p>Espaçamentos recorrentes: 12, 16, 24, 32 e 48 px. Evite elementos com tamanho fixo maior que a tela.</p></article>
+        <article class="admin-card ds-card"><h3>05 / Imagens e banners</h3><div class="ds-image-examples"><div class="ds-ratio ds-ratio-wide">16:9<br><small>1920 × 1080 px</small></div><div class="ds-ratio ds-ratio-gallery">4:3<br><small>1200 × 900 px</small></div><div class="ds-ratio ds-ratio-logo">PNG<br><small>800 × 400 px</small></div></div><p><strong>Banners responsivos:</strong> imagem desktop 1920 × 1080 px (16:9); versão mobile opcional 1080 × 1920 px (9:16, padrão Stories); até 6 MB por arquivo. Em telas até 767 px, o site troca para a imagem mobile, quando cadastrada. Arte pronta sem textos é mostrada inteira (<code>background-size: contain</code>), sem escurecimento; banners com textos usam <code>cover</code> e fundo escurecido para leitura. A versão mobile requer a migração <code>supabase/patch_8_4_banner_mobile.sql</code>.</p><p><strong>Galeria:</strong> recomendado 1200 × 900 px (4:3), JPG/WebP, até 6 MB. <strong>Peixes:</strong> 1200 × 900 px, assunto centralizado. <strong>Parceiros:</strong> PNG/WebP transparente, ~800 × 400 px, até 4 MB.</p><p><strong>Logo do site:</strong> PNG transparente, largura sugerida 800 px, até 2 MB; prefira formato horizontal. O arquivo é ajustado proporcionalmente na navbar e no rodapé.</p><p><strong>Seção de pesca noturna:</strong> foto, legenda, selo opcional, títulos, descrição e CTA editáveis na aba <strong>Informações</strong>. Os chips de horários vêm da tabela <code>weekly_fishing_hours</code>.</p><p class="admin-dim">Dimensões são recomendações de criação, não validações obrigatórias de upload.</p></article>
+        <article class="admin-card ds-card"><h3>06 / Arquitetura e conteúdo</h3><p><strong>Frontend:</strong> HTML, CSS e JavaScript sem framework. <strong>Hospedagem:</strong> GitHub Pages. <strong>Backend:</strong> Supabase Auth, Postgres e Storage.</p><p>As páginas públicas leem conteúdo publicado; o administrador autentica e edita conforme as políticas RLS. O bucket <code>galeria</code> armazena imagens. A tabela <code>site_content_settings</code> armazena textos, contatos e a URL da logo.</p><p><strong>Acessibilidade:</strong> textos alternativos, navegação por teclado, contraste, foco visível e respeito a movimento reduzido.</p><p><strong>Movimento e scrollbar:</strong> nas páginas públicas, entrada em 320 ms e saída em 190 ms entre links internos; links externos, hashes e usuários com movimento reduzido mantêm navegação padrão. Scrollbar laranja <code>#FF6A00</code>, com trilho escuro <code>#141519</code>. Arquivos: <code>css/style.css</code> e <code>js/page-transitions.js</code>.</p></article>
+      </div>
+    </section>
     <section class="dashboard-panel" id="tab-personalizar" hidden>
       <div class="admin-panel-title"><div><h2>Personalizar o site</h2><p>Edite os textos da Home e publique os contatos oficiais. Os campos vazios conservam o conteúdo padrão ou ocultam os links.</p></div></div>
+      <form id="site-logo-form" class="admin-card admin-form" style="margin-bottom:24px">
+        <h3>Logo oficial do site</h3><p class="admin-dim">Envie uma imagem PNG transparente. Ela substituirá o ícone atual na navbar e no rodapé, sem alterar a logo dos parceiros. Se nenhuma logo estiver cadastrada, o ícone anterior continuará visível.</p>
+        <label for="site-logo-file">Selecionar PNG (até 2 MB)</label><input id="site-logo-file" type="file" accept="image/png">
+        <div class="site-logo-preview" id="site-logo-preview" hidden><img id="site-logo-preview-img" alt="Prévia da logo configurada"></div>
+        <div class="form-actions"><button type="submit" class="btn btn-orange" id="site-logo-save">Enviar e aplicar logo ↗</button><button type="button" class="btn btn-outline" id="site-logo-reset">Restaurar ícone original</button></div>
+        <p id="site-logo-feedback" class="admin-dim" role="status" aria-live="polite"></p>
+      </form>
       <form id="site-settings-form" class="admin-card admin-form">
         <h3 class="admin-subtitle">✳ Textos da Home</h3>
         <label for="setting-home_features_description">Introdução dos espaços e serviços</label><textarea id="setting-home_features_description" rows="2" maxlength="500" placeholder="Um espaço feito para viver bons momentos..."></textarea>
-        <label for="setting-home_night_description">Destaque da pesca noturna</label><textarea id="setting-home_night_description" rows="2" maxlength="500" placeholder="Quarta-feira: pesca noturna com jantar..."></textarea>
+
         <label for="setting-home_gallery_description">Introdução da galeria</label><textarea id="setting-home_gallery_description" rows="2" maxlength="500" placeholder="Registros especiais de nossos visitantes..."></textarea>
         <label for="setting-home_visit_description">Apresentação da visita</label><textarea id="setting-home_visit_description" rows="2" maxlength="500" placeholder="Confira horários, valores e regras..."></textarea>
         <h3 class="admin-subtitle">↗ Contato e localização</h3>
@@ -165,5 +218,8 @@
 <script defer src="../js/supabase.js"></script>
 <script defer src="../js/admin.js"></script>
 <script defer src="../js/site-settings-admin.js"></script>
+<script defer src="../js/site-logo.js"></script>
+<script defer src="../js/site-logo-admin.js"></script>
 <script defer src="../js/weekly-hours-admin.js"></script>
+<script defer src="../js/night-feature-admin.js"></script>
 </body></html>
