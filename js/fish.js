@@ -57,11 +57,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const img = document.createElement("img"); img.src = fish.image_url; img.alt = ""; img.loading = "lazy"; img.decoding="async"; cover.append(img);
       } else cover.innerHTML = fishArt;
       const content = document.createElement("div");content.className = "fish-card-content";
-      const small = document.createElement("span"); small.className = "fish-card-index"; small.textContent = `ESPÉCIE ${String(index+1).padStart(2,'0')}`;
       const h3 = document.createElement("h3");h3.textContent = fish.title;
       const p = document.createElement("p");p.textContent = "Conheça esta espécie ↗";
       const arrow = document.createElement("span");arrow.className = "fish-card-arrow";arrow.textContent = "↗";
-      content.append(small, h3, p); button.append(cover, content, arrow);
+      content.append(h3, p); button.append(cover, content, arrow);
       button.addEventListener("click", () => openFish(fish)); grid.append(button);
     });
   }
