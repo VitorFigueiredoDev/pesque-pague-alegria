@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const html = value => String(value ?? "").replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[s]);
   const message = (text, good=false) => {status.hidden=false;status.textContent=text;status.classList.toggle("success",good);status.scrollIntoView({behavior:"smooth",block:"nearest"});};
   const preview = (text, count=110) => (text || "").length>count ? text.slice(0,count)+"..." : (text || "");
-  const sections = {horarios:"Horários",valores:"Valores",noturna:"Pesca noturna",equipamentos:"Aluguel",regras:"Regras",preservacao:"Preservação"};
+  const sections = {horarios:"Horários",valores:"Valores",noturna:"Pesca noturna",equipamentos:"Aluguel",regras:"Regras",preservacao:"Preservação (legado: não exibida)"};
   const photosEl = document.getElementById("admin-gallery-list");
   const infosEl = document.getElementById("admin-info-list");
   const fishEl = document.getElementById("admin-fish-list");

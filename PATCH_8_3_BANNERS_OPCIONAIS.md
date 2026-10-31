@@ -10,3 +10,5 @@ Título, descrição, ordem de exibição, texto do botão e destino do botão s
 Copie o conteúdo desta pasta para a raiz de seu projeto (onde está `index.html`), substituindo os arquivos correspondentes. Teste no Live Server e publique no GitHub Pages.
 
 Não é necessário executar SQL. O título vazio é salvo como string vazia, compatível com colunas obrigatórias do Postgres. Nenhuma tabela ou registro antigo é excluído.
+
+> **Atualização Patch 8.5:** no celular, banners somente com arte agora ajustam a altura à proporção real da imagem e não precisam exibir margens vazias.

@@ -200,3 +200,42 @@ body[data-page].page-exiting {
 }
 .experience-art::after { content:none; }
 .experience-art-caption { position:absolute; bottom:35px;left:35px; color:#fff;font-weight:800;letter-spacing:.2em;font-size:12px;text-shadow:0 1px 8px #000b; }
+
+/* PATCH 8.5 — arte completa sem faixas vazias no celular. */
+.hero { touch-action: pan-y pinch-zoom; }
+.banner-art { display:none; }
+@media (max-width:767px) {
+  .hero:has(.hero-slide-image-only.active) {
+    height:auto;
+    min-height:0;
+    aspect-ratio:var(--active-banner-aspect, 9 / 16);
+  }
+  .hero-slide-dynamic.hero-slide-image-only {
+    background-image:none;
+    background-color:var(--bg);
+  }
+  .hero-slide-image-only .banner-art {
+    display:block;
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+  }
+  .hero-slide-image-only .banner-art img {
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+  }
+  .hero:has(.hero-slide-image-only.active) .hero-control-bar {
+    width:calc(100% - 20px);
+    bottom:8px;
+    padding:6px 10px;
+    background:#090a0cb8;
+  }
+  .hero:has(.hero-slide-image-only.active) .slide-controls>button {
+    width:36px;
+    height:36px;
+    border-radius:11px;
+  }
+}

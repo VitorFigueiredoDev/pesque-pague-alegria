@@ -57,17 +57,15 @@
       }
     }
     const links = [
-      ["contact_whatsapp","WhatsApp ↗"], ["contact_instagram","Instagram ↗"], ["contact_maps","Localização ↗"]
+      ["contact_whatsapp","WhatsApp","whatsapp"],
+      ["contact_instagram","Instagram","instagram"],
+      ["contact_maps","Localização","maps"]
     ];
     const contact = document.getElementById("contact-actions");
     if (contact) {
-      const actions = links.map(([key,label]) => {
+      const actions = links.map(([key, ,kind]) => {
         const url = safeUrl(settings[key], key);
-        if (!url) return null;
-        const a = document.createElement("a");
-        a.className = key === "contact_whatsapp" ? "btn btn-orange" : "btn btn-outline";
-        a.textContent = label; a.href = url; a.target="_blank"; a.rel="noopener noreferrer";
-        return a;
+        return url ? window.createContactAction?.(kind, url) : null;
       }).filter(Boolean);
       if (actions.length) {contact.className="contact-actions";contact.replaceChildren(...actions);}
     }

@@ -44,7 +44,29 @@ document.addEventListener("DOMContentLoaded", () => {
     slide.style.setProperty("--banner-desktop", `url(${JSON.stringify(imgUrl)})`);
     if (mobileImgUrl) slide.style.setProperty("--banner-mobile", `url(${JSON.stringify(mobileImgUrl)})`);
     // Sem título, a arte continua acessível por uma descrição neutra do slide.
-    if (onlyArtwork) slide.setAttribute("aria-label", "Arte promocional do Pesque e Pague Alegria");
+    if (onlyArtwork) {
+      slide.setAttribute("aria-label", "Arte promocional do Pesque e Pague Alegria");
+      slide.dataset.hasMobileArt = String(Boolean(mobileImgUrl));
+      // Em telas pequenas a arte define a altura do banner, em vez de ficar
+      // centralizada dentro de um painel alto com faixas vazias.
+      const picture = document.createElement("picture");
+      picture.className = "banner-art";
+      if (mobileImgUrl) {
+        const source = document.createElement("source");
+        source.media = "(max-width: 767px)";
+        source.srcset = mobileImgUrl;
+        picture.append(source);
+      }
+      const image = document.createElement("img");
+      image.src = imgUrl;
+      image.alt = "Arte promocional do Pesque e Pague Alegria";
+      image.decoding = "async";
+      image.addEventListener("load", () => {
+        if (slide.classList.contains("active")) updateMobileArtRatio();
+      });
+      picture.append(image);
+      slide.append(picture);
+    }
 
     if (!onlyArtwork) {
       const content = document.createElement("div");
@@ -81,6 +103,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     return slide;
   }
+  function updateMobileArtRatio() {
+    if (!hero || !slides.length) return;
+    const slide = slides[current];
+    if (!slide.classList.contains("hero-slide-image-only")) {
+      hero.style.removeProperty("--active-banner-aspect");
+      return;
+    }
+    const image = slide.querySelector(".banner-art img");
+    const fallback = slide.dataset.hasMobileArt === "true" ? "9 / 16" : "16 / 9";
+    hero.style.setProperty("--active-banner-aspect",
+      image?.naturalWidth && image?.naturalHeight
+        ? `${image.naturalWidth} / ${image.naturalHeight}`
+        : fallback);
+  }
   function showSlide(index, announce = false) {
     if (!slides.length) return;
     current = (index + slides.length) % slides.length;
@@ -94,6 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
       dot.classList.toggle("active", i === current);
       dot.setAttribute("aria-current", String(i === current));
     });
+    updateMobileArtRatio();
     counter.textContent = `${String(current + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
     if (announce && liveStatus) liveStatus.textContent = `Destaque ${current + 1} de ${slides.length}`;
   }
@@ -156,6 +193,26 @@ document.addEventListener("DOMContentLoaded", () => {
     hero.addEventListener("focusout", event => {
       if (!hero.contains(event.relatedTarget)) restartSlider();
     });
+    // Arrastar para os lados muda o banner; rolagem vertical continua nativa.
+    let touchStart = null;
+    hero.addEventListener("touchstart", (event) => {
+      if (event.touches.length !== 1 || event.target.closest(".hero-control-bar, a, button")) return;
+      touchStart = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+      clearInterval(timer);
+    }, {passive: true});
+    hero.addEventListener("touchend", (event) => {
+      if (!touchStart) return;
+      const end = event.changedTouches[0];
+      const deltaX = end.clientX - touchStart.x;
+      const deltaY = end.clientY - touchStart.y;
+      touchStart = null;
+      if (slides.length > 1 && Math.abs(deltaX) >= 48 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+        showSlide(current + (deltaX < 0 ? 1 : -1), true);
+      }
+      restartSlider();
+    }, {passive: true});
+    hero.addEventListener("touchcancel", () => { touchStart = null; restartSlider(); }, {passive: true});
+    window.addEventListener("resize", updateMobileArtRatio, {passive: true});
     next.addEventListener("click", () => { showSlide(current + 1, true); restartSlider(); });
     previous.addEventListener("click", () => { showSlide(current - 1, true); restartSlider(); });
     document.addEventListener("visibilitychange", restartSlider);

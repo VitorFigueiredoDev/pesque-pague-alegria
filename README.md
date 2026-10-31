@@ -25,7 +25,7 @@ A barra de rolagem usa laranja `#FF6A00` e fundo escuro no Chrome, Edge, Safari 
 ## Banners com imagem pronta (Patch 8.3)
 Em **Admin → Banners**, basta enviar uma imagem (ou fornecer uma URL HTTPS). Título, descrição, ordem e botão são opcionais.
 
-- **Somente imagem:** a Home mostra a arte completa, sem textos gerados automaticamente e sem o filtro escuro; em telas muito estreitas poderá haver margens para preservar a proporção da imagem.
+- **Somente imagem:** a Home mostra a arte completa, sem textos gerados automaticamente e sem o filtro escuro; no celular o banner ajusta a altura à proporção da arte para evitar faixas vazias.
 - **Com texto:** título e descrição aparecem somente se preenchidos. O botão só é exibido quando houver texto e link válidos.
 - O título vazio é salvo como string vazia (não `NULL`) para manter compatibilidade com colunas `NOT NULL` existentes no Supabase.
 - **Não requer novo SQL** e não modifica banners existentes; versões anteriores continuam válidas.
@@ -44,3 +44,7 @@ Somente chaves públicas (anon/publishable) no frontend. Nunca coloque `service_
 Imagens verticais opcionais para banners (1080 × 1920, Stories) e editor do
 bloco “Mais tempo. Mais história.” na aba **Informações**. Execute primeiro
 `supabase/patch_8_4_banner_mobile.sql` e consulte `PATCH_8_4_LEIA_PRIMEIRO.md`.
+
+## Patch 8.5 — melhorias mobile e informações
+
+No celular, banners com apenas imagem acompanham a proporção real do arquivo (se houver imagem vertical, usa-a automaticamente). O carrossel aceita deslizar com o dedo para esquerda/direita, mantendo o scroll vertical. Retirado o selo redundante de pesca noturna, removida a seção separada de preservação e integrada a orientação de passaguá às regras. Botões de contato com ícones SVG, sem setas. Sem alterações de banco de dados.

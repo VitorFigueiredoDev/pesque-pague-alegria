@@ -24,12 +24,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const contact = document.getElementById("contact-actions");
   if (contact) {
     const actions = [];
-    for (const [label, url] of [["WhatsApp ↗", config.whatsapp], ["Instagram ↗", config.instagram], ["Localização ↗", config.maps]]) {
+    for (const [kind, url] of [["whatsapp", config.whatsapp], ["instagram", config.instagram], ["maps", config.maps]]) {
       if (!url || !/^https:\/\//i.test(url)) continue;
-      const a = document.createElement("a");
-      a.className = actions.length ? "btn btn-outline" : "btn btn-orange";
-      a.href = url; a.target = "_blank"; a.rel = "noopener noreferrer"; a.textContent = label;
-      actions.push(a);
+      const action = window.createContactAction?.(kind, url);
+      if (action) actions.push(action);
     }
     if (actions.length) { contact.className = "contact-actions"; contact.replaceChildren(...actions); }
   }
@@ -70,9 +68,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (rules.length) document.getElementById("regras-container").innerHTML = rules.map(item =>
       `<article><span class="rule-point" aria-hidden="true">×</span><div><h3>${html(item.title)}</h3><p>${html(item.content)}</p></div></article>`).join("");
 
-    const care = of("preservacao");
-    if (care.length) document.getElementById("preservacao-container").innerHTML = care.map((item, i) =>
-      `<div class="care-step"><strong>${String(i+1).padStart(2,"0")}</strong><div><h3>${html(item.title)}</h3><p>${html(item.content)}</p></div></div>`).join("");
   } catch (error) {
     console.warn("Conteúdo remoto indisponível; exibindo informações padrão.", error.message);
   }
