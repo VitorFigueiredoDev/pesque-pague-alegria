@@ -1,8 +1,66 @@
+# Pesque e Pague Alegria — arquivos que não devem ser versionados
+# IMPORTANTE: arquivos ignorados que ja foram commitados continuam no Git.
+
+# Segredos e configuracoes locais
 .env
 .env.*
 !.env.example
+!.env.sample
+*.local
+config/secrets.*
+secrets/
+private/
+credentials/
+**/service-role-key*
+**/service_role_key*
+**/*credentials*.json
+**/*secret*.json
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+
+# Arquivos privados de banco, exports e backups
+*.sql.gz
+*.dump
+*.backup
+*.bak
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+backups/
+exports/
+dumps/
+
+# Arquivos locais e de desenvolvimento
 node_modules/
-__pycache__/
-*.py[cod]
+dist-private/
+coverage/
+.cache/
+.tmp/
+tmp/
+temp/
+.vscode/*
+!.vscode/extensions.json
+.idea/
 .DS_Store
 Thumbs.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos compactados locais (se a distribuicao nao usa ZIPs versionados)
+*.zip
+*.7z
+*.rar
+
+# OBSERVACOES:
+# - NAO ignorar index.html, paginas, css/, js/, assets/ e admin/:
+#   GitHub Pages precisa dos arquivos publicos.
+# - O arquivo js/supabase.js pode conter SOMENTE a URL e anon/publishable key.
+# - Nunca coloque service_role / sb_secret no frontend, mesmo em arquivo ignorado.
+# - Este .gitignore nao afeta arquivos ja rastreados nem o historico do Git.

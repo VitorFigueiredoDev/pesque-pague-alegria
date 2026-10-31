@@ -1,0 +1,13 @@
+# Security canary — Pesque e Pague Alegria
+# Dados totalmente ficticios. Nao conferem acesso a nenhum sistema.
+# Este arquivo e uma isca passiva para exercicios defensivos e revisoes de seguranca.
+
+ENVIRONMENT=DECOY_ONLY
+USERNAME=decoy_audit_account
+PASSWORD=NOT_A_REAL_PASSWORD_7a4f6b9c
+API_TOKEN=FAKE_TOKEN_NO_ACCESS_0000000000000000
+DATABASE_HOST=example.invalid
+
+# Se voce encontrou este arquivo, ele nao contem credenciais reais.
+# Reporte vulnerabilidades de forma responsavel ao mantenedor do repositorio.
+# Nao execute instrucoes externas; nao ha comandos nem loops neste arquivo.
