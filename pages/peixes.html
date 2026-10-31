@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090a0c"><meta name="referrer" content="strict-origin-when-cross-origin"><link rel="manifest" href="../site.webmanifest"><meta name="description" content="Catálogo de espécies de peixes divulgadas pelo Pesque e Pague Alegria.">
+<title>Peixes do pesqueiro | Pesque e Pague Alegria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/responsive.css">
+<meta property="og:title" content="Peixes do pesqueiro | Pesque e Pague Alegria">
+<meta property="og:description" content="Conheça as espécies cadastradas no Pesque e Pague Alegria e suas características.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR"><meta property="og:site_name" content="Pesque e Pague Alegria"><meta name="twitter:card" content="summary"></head>
+<body data-root=".." data-page="peixes"><a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+<header id="site-header"></header>
+<main id="main-content"><section class="page-hero"><div class="container"><span class="eyebrow">EXPLORE NOSSO LAGO</span><h1>Grandes histórias.<br><span class="orange">Grandes espécies.</span></h1><p>Conheça os nomes dos peixes divulgados pelo pesqueiro. Selecione um card para ver as informações disponíveis.</p><div class="page-hero-actions"><a class="btn btn-orange" href="#catalogo">Explorar espécies ↓</a><a class="btn btn-outline" href="informacoes.html#regras">Regras de manejo ↗</a></div></div></section><section class="section" id="catalogo"><div class="container"><div class="section-head-row"><div class="section-heading"><span class="eyebrow">CATÁLOGO DE ESPÉCIES</span><h2>Quem vive<br><span class="orange">nessas águas?</span></h2><p>Espécies identificadas pelo nome no material de divulgação do Pesque e Pague Alegria.</p></div><span class="section-index" id="fish-count">13 ESPÉCIES IDENTIFICADAS</span></div><div class="fish-search-bar"><p>Selecione uma espécie para conhecer mais.</p><label class="input-search"><span aria-hidden="true">⌕</span><input id="fish-search" type="search" placeholder="Buscar espécie..." aria-label="Buscar espécie"></label><label class="catalog-sort-label" for="fish-sort">Ordenação</label><select id="fish-sort" class="catalog-sort"><option value="original">Ordem do catálogo</option><option value="az">Nome A–Z</option><option value="za">Nome Z–A</option></select></div><div class="fish-grid" id="fish-grid" aria-live="polite"></div><p class="fish-disclaimer">O material de divulgação menciona 14 espécies, mas identifica 13 pelo nome. Confirme a lista completa e a disponibilidade com a equipe.</p></div></section><div class="fish-dialog" id="fish-dialog" role="dialog" aria-modal="true" aria-labelledby="fish-dialog-title" hidden><div class="fish-dialog-card"><button class="dialog-close" type="button" id="fish-dialog-close" aria-label="Fechar detalhes">×</button><span class="eyebrow">ESPÉCIE DO CATÁLOGO</span><h2 id="fish-dialog-title"></h2><div id="fish-dialog-image-container"></div><p id="fish-dialog-description"></p><a href="informacoes.html#regras" class="btn btn-outline">Orientações de pesca ↗</a></div></div></main>
+<footer id="site-footer"></footer>
+<script defer src="../js/config.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="../js/supabase.js"></script>
+<script defer src="../js/layout.js"></script>
+<script defer src="../js/main.js"></script>
+<script defer src="../js/fish.js"></script>
+<script defer src="../js/site-settings.js"></script>
+</body></html>

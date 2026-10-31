@@ -1,0 +1,147 @@
+<!DOCTYPE html><html lang="pt-BR"><head><link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090a0c"><meta name="robots" content="noindex,nofollow">
+<title>Painel administrativo • Etapas 4.4–4.7 | Pesque e Pague Alegria</title>
+<link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/admin.css">
+</head><body class="admin-app admin-dashboard-page">
+<header class="admin-topbar">
+  <a class="brand" href="../index.html"><span class="brand-mark">✳</span><span class="brand-name"><small>PESQUE E PAGUE</small><strong>ALEGRIA<span>.</span></strong></span></a>
+  <div class="admin-user"><span id="admin-email"></span><a href="../index.html" class="admin-top-link">Ver site ↗</a><button type="button" id="logout" class="admin-top-link">Sair</button></div>
+</header>
+<div id="admin-lock" class="admin-lock"><div class="loading-ring"></div><p id="admin-lock-message">Verificando autorização de acesso...</p></div>
+<main id="dashboard" class="dashboard-layout" hidden>
+  <aside class="dashboard-side"><span class="eyebrow">PAINEL DE CONTROLE</span><h2>Seu espaço<br>de gestão<span class="orange">.</span></h2><nav class="dashboard-tabs" aria-label="Seções do painel">
+    <button class="dashboard-tab active" type="button" data-tab="resumo" aria-selected="true">◉ <span>Visão geral</span></button>
+    <button class="dashboard-tab" type="button" data-tab="galeria" aria-selected="false">▦ <span>Galeria</span></button>
+    <button class="dashboard-tab" type="button" data-tab="informacoes" aria-selected="false">◷ <span>Informações</span></button>
+    <button class="dashboard-tab" type="button" data-tab="peixes" aria-selected="false">◈ <span>Peixes</span></button>
+    <button class="dashboard-tab" type="button" data-tab="parceiros" aria-selected="false">◇ <span>Parceiros</span></button>
+    <button class="dashboard-tab banner-tab" type="button" data-tab="banners" aria-selected="false">▰ <span>Banners</span></button>
+    <button class="dashboard-tab" type="button" data-tab="personalizar" aria-selected="false">✳ <span>Personalizar site</span></button>
+  </nav><div class="side-note">Alterações publicadas aparecem no site. A segurança é controlada pelo Supabase e suas políticas de acesso.</div></aside>
+  <div class="dashboard-main">
+    <div class="dashboard-welcome"><div><span class="eyebrow">ADMINISTRAÇÃO</span><h1>Conteúdo do site<span class="orange">.</span></h1><p>Acompanhe seu conteúdo e gerencie o site em um só lugar.</p></div><span class="admin-tag">ATUALIZAÇÃO 4.4–4.7</span></div>
+    <div id="admin-status" class="admin-status" role="status" aria-live="polite" hidden></div>
+    <section class="dashboard-panel active" id="tab-resumo">
+      <div class="admin-panel-title dashboard-overview-title"><div><h2>Visão geral</h2><p>Um resumo dos conteúdos cadastrados no Pesque e Pague Alegria.</p></div><button class="btn btn-outline" id="overview-refresh" type="button">Atualizar números ↻</button></div>
+      <div class="overview-stats" aria-live="polite">
+        <article class="overview-stat"><span class="overview-stat-icon">▦</span><span class="overview-stat-name">Fotografias</span><strong id="stat-photos">—</strong><small id="stat-photos-published">Aguardando dados</small></article>
+        <article class="overview-stat"><span class="overview-stat-icon">◷</span><span class="overview-stat-name">Informações</span><strong id="stat-infos">—</strong><small id="stat-infos-published">Aguardando dados</small></article>
+        <article class="overview-stat"><span class="overview-stat-icon">◈</span><span class="overview-stat-name">Espécies</span><strong id="stat-fish">—</strong><small id="stat-fish-published">Aguardando dados</small></article>
+        <article class="overview-stat"><span class="overview-stat-icon">◇</span><span class="overview-stat-name">Parceiros</span><strong id="stat-partners">—</strong><small id="stat-partners-published">Aguardando dados</small></article>
+      </div>
+      <div class="overview-quick-title"><h3>Acesso rápido</h3><p>Escolha o que deseja atualizar.</p></div>
+      <div class="overview-actions">
+        <button type="button" class="overview-action" data-go-tab="galeria"><span>▦</span><strong>Adicionar fotos</strong><small>Publique registros reais da pescaria.</small><b>↗</b></button>
+        <button type="button" class="overview-action" data-go-tab="informacoes"><span>◷</span><strong>Atualizar horários</strong><small>Edite valores e regras de visita.</small><b>↗</b></button>
+        <button type="button" class="overview-action" data-go-tab="peixes"><span>◈</span><strong>Gerenciar peixes</strong><small>Atualize o catálogo de espécies.</small><b>↗</b></button>
+        <button type="button" class="overview-action" data-go-tab="parceiros"><span>◇</span><strong>Gerenciar parceiros</strong><small>Organize marcas e logotipos.</small><b>↗</b></button>
+        <button type="button" class="overview-action" data-go-tab="banners"><span>▰</span><strong>Gerenciar banners</strong><small>Crie os slides da Home.</small><b>↗</b></button>
+        <button type="button" class="overview-action" data-go-tab="personalizar"><span>✳</span><strong>Personalizar site</strong><small>Textos e contatos oficiais.</small><b>↗</b></button>
+      </div>
+      <div class="overview-tip"><span>✳</span><p><strong>Dica:</strong> registros ocultos continuam salvos no banco, mas não aparecem nas páginas públicas.</p></div>
+    </section>
+    <section class="dashboard-panel" id="tab-galeria" hidden>
+      <div class="admin-panel-title"><div><h2>Galeria de fotos</h2><p>Publique imagens reais do pesqueiro. Formatos JPG, PNG e WebP até 6 MB.</p></div></div>
+      <form id="gallery-form" class="admin-card admin-form admin-upload-form">
+        <div class="form-grid"><div><label for="gallery-title">Título</label><input id="gallery-title" maxlength="120" required placeholder="Ex.: Nosso lago ao entardecer"></div><div><label for="gallery-file">Imagem</label><input id="gallery-file" type="file" accept="image/jpeg,image/png,image/webp" required></div></div>
+        <label for="gallery-description">Descrição (opcional)</label><textarea id="gallery-description" rows="2" maxlength="500" placeholder="Conte um pouco sobre essa foto..."></textarea>
+        <label class="checkbox-line"><input id="gallery-published" type="checkbox" checked> Publicar imediatamente</label>
+        <button class="btn btn-orange" id="gallery-submit" type="submit">Enviar fotografia ↗</button>
+      </form>
+      <h3 class="admin-subtitle">Imagens cadastradas</h3><div id="admin-gallery-list" class="admin-cards-grid"><p class="admin-dim">Carregando fotos...</p></div>
+    </section>
+    <section class="dashboard-panel" id="tab-informacoes" hidden>
+      <div class="admin-panel-title"><div><h2>Informações do pesqueiro</h2><p>Edite horários, preços, regras e orientações cadastradas no banco.</p></div></div>
+      <form id="info-form" class="admin-card admin-form">
+        <input type="hidden" id="info-id">
+        <div class="form-grid"><div><label for="info-section">Seção</label><select id="info-section" required><option value="horarios">Horários</option><option value="valores">Valores</option><option value="noturna">Pesca noturna</option><option value="equipamentos">Aluguel</option><option value="regras">Regras</option><option value="preservacao">Preservação</option></select></div><div><label for="info-order">Ordem de exibição</label><input id="info-order" type="number" value="0" min="0" max="9999"></div></div>
+        <label for="info-title">Título</label><input id="info-title" required maxlength="150" placeholder="Ex.: Terça-feira">
+        <label for="info-content">Descrição / conteúdo</label><textarea id="info-content" required rows="3" maxlength="2000" placeholder="Ex.: 09h às 18h"></textarea>
+        <label class="checkbox-line"><input id="info-published" type="checkbox" checked> Informação publicada</label>
+        <div class="form-actions"><button class="btn btn-orange" type="submit" id="info-submit">Salvar informação ↗</button><button class="btn btn-outline" type="button" id="info-cancel">Limpar formulário</button></div>
+      </form>
+      <h3 class="admin-subtitle">Informações cadastradas</h3><div id="admin-info-list" class="admin-list"><p class="admin-dim">Carregando informações...</p></div>
+    </section>
+    <section class="dashboard-panel" id="tab-peixes" hidden>
+      <div class="admin-panel-title"><div><h2>Catálogo de peixes</h2><p>Cadastre espécies e, se desejar, inclua uma URL de fotografia pública HTTPS.</p></div></div>
+      <form id="fish-form" class="admin-card admin-form"><input type="hidden" id="fish-id">
+        <div class="form-grid"><div><label for="fish-name">Nome da espécie</label><input id="fish-name" required maxlength="120" placeholder="Ex.: Pirarara"></div><div><label for="fish-order">Ordem de exibição</label><input id="fish-order" type="number" value="0" min="0" max="9999"></div></div>
+        <label for="fish-description">Descrição</label><textarea id="fish-description" rows="3" maxlength="2000" placeholder="Informações verificadas sobre a espécie"></textarea>
+        <label for="fish-url">URL da fotografia (opcional)</label><input id="fish-url" type="url" placeholder="https://...">
+        <label class="checkbox-line"><input id="fish-published" type="checkbox" checked> Espécie publicada</label>
+        <div class="form-actions"><button class="btn btn-orange" type="submit">Salvar espécie ↗</button><button type="button" class="btn btn-outline" id="fish-cancel">Limpar formulário</button></div>
+      </form>
+      <h3 class="admin-subtitle">Espécies cadastradas</h3><div id="admin-fish-list" class="admin-list"><p class="admin-dim">Carregando espécies...</p></div>
+    </section>
+    <section class="dashboard-panel" id="tab-banners" hidden>
+      <div class="admin-panel-title"><div><h2>Banners da Home</h2><p>Prepare os slides principais com imagens, textos, links e ordem de exibição.</p></div></div>
+      <form id="banner-form" class="admin-card admin-form">
+        <input id="banner-id" type="hidden">
+        <div class="form-grid">
+          <div><label for="banner-title">Título</label><input id="banner-title" required maxlength="150" placeholder="Ex.: Sua próxima aventura começa aqui"></div>
+          <div><label for="banner-order">Ordem de exibição</label><input id="banner-order" type="number" min="0" max="9999" value="0"></div>
+        </div>
+        <label for="banner-description">Descrição</label><textarea id="banner-description" maxlength="500" rows="3" placeholder="Uma frase convidativa sobre a experiência"></textarea>
+        <label for="banner-file">Imagem (JPG, PNG ou WebP, até 6 MB)</label><input id="banner-file" type="file" accept="image/jpeg,image/png,image/webp">
+        <label for="banner-image-url">Ou URL HTTPS da imagem</label><input id="banner-image-url" type="url" placeholder="https://...">
+        <div id="banner-preview-box" class="banner-preview-box" hidden><img id="banner-preview-image" alt="Prévia do banner"></div>
+        <div class="form-grid">
+          <div><label for="banner-button-text">Texto do botão (opcional)</label><input id="banner-button-text" maxlength="55" placeholder="Ex.: Saiba mais"></div>
+          <div><label for="banner-button-url">Destino do botão (opcional)</label><input id="banner-button-url" maxlength="500" placeholder="pages/informacoes.html"></div>
+        </div>
+        <p class="admin-dim">Links aceitos: caminho interno do site ou endereço HTTPS.</p>
+        <label class="checkbox-line"><input id="banner-published" type="checkbox" checked> Publicado</label>
+        <div class="form-actions"><button type="submit" id="banner-submit" class="btn btn-orange">Salvar banner ↗</button><button type="button" id="banner-cancel" class="btn btn-outline">Limpar formulário</button></div>
+      </form>
+      <h3 class="admin-subtitle">Banners cadastrados</h3>
+      <div id="admin-banner-list" class="admin-list"><p class="admin-dim">Carregando banners...</p></div>
+    </section>
+    <section class="dashboard-panel" id="tab-parceiros" hidden>
+      <div class="admin-panel-title"><div><h2>Parceiros e patrocinadores</h2><p>Adicione parceiros à Home usando upload de logotipo ou uma URL HTTPS.</p></div></div>
+      <form id="partner-form" class="admin-card admin-form">
+        <input type="hidden" id="partner-id">
+        <div class="form-grid">
+          <div><label for="partner-name">Nome da empresa</label><input id="partner-name" required maxlength="120" placeholder="Ex.: Loja do Pescador"></div>
+          <div><label for="partner-order">Ordem de exibição</label><input id="partner-order" type="number" min="0" max="9999" value="0"></div>
+        </div>
+        <label for="partner-logo-file">Enviar logotipo (PNG, JPG ou WebP • até 4 MB)</label>
+        <input id="partner-logo-file" type="file" accept="image/png,image/jpeg,image/webp">
+        <p class="admin-dim partner-upload-hint">O arquivo enviado terá prioridade sobre a URL. Ao editar, deixe ambos em branco para manter o logo atual.</p>
+        <label for="partner-logo">Ou usar URL HTTPS do logotipo</label>
+        <input id="partner-logo" type="url" placeholder="https://exemplo.com/logo.png">
+        <div class="partner-logo-preview" id="partner-logo-preview" hidden><img id="partner-preview-image" alt="Prévia do logotipo"><span>Prévia do logotipo</span></div>
+        <label for="partner-site">Site ou Instagram (HTTPS)</label>
+        <input id="partner-site" type="url" placeholder="https://instagram.com/...">
+        <label for="partner-description">Descrição (opcional)</label>
+        <textarea id="partner-description" maxlength="500" rows="3" placeholder="Uma breve apresentação do parceiro"></textarea>
+        <label class="checkbox-line"><input id="partner-published" type="checkbox" checked> Publicado no site</label>
+        <div class="form-actions"><button type="submit" class="btn btn-orange" id="partner-submit">Salvar parceiro ↗</button><button type="button" class="btn btn-outline" id="partner-cancel">Limpar formulário</button></div>
+      </form>
+      <h3 class="admin-subtitle">Parceiros cadastrados</h3>
+      <div id="admin-partner-list" class="admin-list"><p class="admin-dim">Carregando parceiros...</p></div>
+    </section>
+    <section class="dashboard-panel" id="tab-personalizar" hidden>
+      <div class="admin-panel-title"><div><h2>Personalizar o site</h2><p>Edite os textos da Home e publique os contatos oficiais. Os campos vazios conservam o conteúdo padrão ou ocultam os links.</p></div></div>
+      <form id="site-settings-form" class="admin-card admin-form">
+        <h3 class="admin-subtitle">✳ Textos da Home</h3>
+        <label for="setting-home_features_description">Introdução dos espaços e serviços</label><textarea id="setting-home_features_description" rows="2" maxlength="500" placeholder="Um espaço feito para viver bons momentos..."></textarea>
+        <label for="setting-home_night_description">Destaque da pesca noturna</label><textarea id="setting-home_night_description" rows="2" maxlength="500" placeholder="Quarta-feira: pesca noturna com jantar..."></textarea>
+        <label for="setting-home_gallery_description">Introdução da galeria</label><textarea id="setting-home_gallery_description" rows="2" maxlength="500" placeholder="Registros especiais de nossos visitantes..."></textarea>
+        <label for="setting-home_visit_description">Apresentação da visita</label><textarea id="setting-home_visit_description" rows="2" maxlength="500" placeholder="Confira horários, valores e regras..."></textarea>
+        <h3 class="admin-subtitle">↗ Contato e localização</h3>
+        <p class="admin-dim">Cadastre somente os links oficiais. O WhatsApp deve usar https://wa.me/NUMERO; o mapa deve ser um link HTTPS válido.</p>
+        <label for="setting-contact_whatsapp">WhatsApp oficial</label><input id="setting-contact_whatsapp" type="url" placeholder="https://wa.me/5534..." maxlength="300">
+        <label for="setting-contact_instagram">Instagram oficial</label><input id="setting-contact_instagram" type="url" placeholder="https://www.instagram.com/..." maxlength="300">
+        <label for="setting-contact_maps">Localização no Google Maps</label><input id="setting-contact_maps" type="url" placeholder="https://maps.google.com/..." maxlength="600">
+        <button type="submit" id="site-settings-submit" class="btn btn-orange">Salvar personalizações ↗</button>
+        <p id="site-settings-feedback" role="status" aria-live="polite" class="admin-dim"></p>
+      </form>
+    </section>
+  </div>
+</main>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="../js/supabase.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/site-settings-admin.js"></script>
+</body></html>

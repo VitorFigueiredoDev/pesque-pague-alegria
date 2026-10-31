@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090a0c"><meta name="referrer" content="strict-origin-when-cross-origin"><link rel="manifest" href="../site.webmanifest"><meta name="description" content="Confira imagens e momentos das pescarias no Pesque e Pague Alegria.">
+<title>Galeria de fotos | Pesque e Pague Alegria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/responsive.css">
+<meta property="og:title" content="Galeria de fotos | Pesque e Pague Alegria">
+<meta property="og:description" content="Veja registros das pescarias e momentos especiais no Pesque e Pague Alegria.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR"><meta property="og:site_name" content="Pesque e Pague Alegria"><meta name="twitter:card" content="summary"></head>
+<body data-root=".." data-page="galeria"><a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+<header id="site-header"></header>
+<main id="main-content"><section class="page-hero"><div class="container"><span class="eyebrow">GALERIA DE MOMENTOS</span><h1>Tem história que<br><span class="orange">vira lembrança.</span></h1><p>As capturas, os encontros e os bons momentos que tornam cada dia único.</p><div class="page-hero-actions"><a class="btn btn-orange" href="#fotos">Ver fotos ↓</a></div></div></section>
+<section class="section gallery-section" id="fotos"><div class="container"><div class="gallery-heading"><div><span class="eyebrow">PELOS NOSSOS OLHOS</span><h2>Registros do Alegria<span class="orange">.</span></h2></div><span id="gallery-count" role="status" aria-live="polite">Carregando...</span></div><div class="catalog-toolbar" aria-label="Ferramentas da galeria"><label class="catalog-search"><span aria-hidden="true">⌕</span><input id="gallery-search" type="search" placeholder="Buscar fotos por título ou descrição" aria-label="Buscar fotos por título ou descrição"></label><label class="catalog-sort-label" for="gallery-sort">Ordenação</label><select id="gallery-sort" class="catalog-sort"><option value="recent">Mais recentes</option><option value="oldest">Mais antigas</option><option value="az">Título A–Z</option></select><button id="gallery-clear" class="catalog-clear" type="button" hidden>Limpar busca</button></div><div id="gallery-grid" class="gallery-grid" aria-live="polite"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div></div></section>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Visualizador de imagens" hidden><button type="button" class="lightbox-close" id="lightbox-close" aria-label="Fechar imagem">×</button><button type="button" class="lightbox-nav prev" id="lightbox-prev" aria-label="Imagem anterior">‹</button><figure class="lightbox-figure"><img id="lightbox-image" alt=""><figcaption class="lightbox-caption"><strong id="lightbox-title"></strong><p id="lightbox-description"></p></figcaption></figure><button type="button" class="lightbox-nav next" id="lightbox-next" aria-label="Próxima imagem">›</button><div class="lightbox-index" id="lightbox-index"></div></div></main>
+<footer id="site-footer"></footer>
+<script defer src="../js/config.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="../js/supabase.js"></script>
+<script defer src="../js/layout.js"></script>
+<script defer src="../js/main.js"></script>
+<script defer src="../js/gallery.js"></script>
+<script defer src="../js/site-settings.js"></script>
+</body></html>

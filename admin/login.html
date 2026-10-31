@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="pt-BR"><head><link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090a0c"><meta name="robots" content="noindex,nofollow">
+<title>Acesso administrativo | Pesque e Pague Alegria</title>
+<link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/admin.css">
+</head><body class="admin-app admin-login-page">
+<main class="admin-login-wrap">
+  <a class="back-link" href="../index.html">← Voltar ao site</a>
+  <div class="login-card">
+    <div class="login-mark">✳</div>
+    <span class="eyebrow">ACESSO RESTRITO</span>
+    <h1>Boas-vindas<br>de volta<span class="orange">.</span></h1>
+    <p>Gerencie os conteúdos do Pesque e Pague Alegria em um só lugar.</p>
+    <form id="login-form" class="admin-form">
+      <label for="email">E-mail de administrador</label>
+      <input id="email" name="email" type="email" autocomplete="username" required placeholder="seu@email.com">
+      <label for="password">Senha</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="••••••••">
+      <button class="btn btn-orange" type="submit" id="login-button">Entrar no painel ↗</button>
+      <p class="form-message" id="login-message" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+  <small class="admin-footnote">Apenas usuários autorizados podem administrar este site.</small>
+</main>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="../js/supabase.js"></script>
+<script defer src="../js/admin-login.js"></script>
+</body></html>
