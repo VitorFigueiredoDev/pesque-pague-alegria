@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else cover.innerHTML = fishArt;
       const content = document.createElement("div");content.className = "fish-card-content";
       const h3 = document.createElement("h3");h3.textContent = fish.title;
-      const p = document.createElement("p");p.textContent = "Conheça esta espécie ↗";
+      const p = document.createElement("p");p.textContent = "clique e conheça";
       const arrow = document.createElement("span");arrow.className = "fish-card-arrow";arrow.textContent = "↗";
       content.append(h3, p); button.append(cover, content, arrow);
       button.addEventListener("click", () => openFish(fish)); grid.append(button);
