@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const aluguel = of("equipamentos");
     if (aluguel.length) document.getElementById("equipamentos-container").innerHTML = aluguel.map((item, i) =>
-      `<article class="rental-card"><span class="rental-icon" aria-hidden="true">${i%2 ? "◉" : "⌁"}</span><small>${String(i+1).padStart(2,"0")} / ALUGUEL</small><h3>${html(item.title)}</h3><p>${html(item.content)}</p><a class="rental-link" href="${rentalContactUrl(rentalWhatsApp,item.title)}" data-equipment="${html(item.title)}" target="_blank" rel="noopener noreferrer" aria-label="Consultar disponibilidade de ${html(item.title)} no WhatsApp">Consulte disponibilidade ↗</a></article>`).join("");
+      `<article class="rental-card"><span class="rental-icon" aria-hidden="true">${i%2 ? "◉" : "⌁"}</span><h3>${html(item.title)}</h3><p>${html(item.content)}</p><a class="rental-link" href="${rentalContactUrl(rentalWhatsApp,item.title)}" data-equipment="${html(item.title)}" target="_blank" rel="noopener noreferrer" aria-label="Consultar disponibilidade de ${html(item.title)} no WhatsApp">Consulte disponibilidade ↗</a></article>`).join("");
     window.updateRentalWhatsappLinks();
 
     const rules = of("regras");
