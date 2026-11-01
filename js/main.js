@@ -132,6 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     updateMobileArtRatio();
     counter.textContent = `${String(current + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
+
     if (announce && liveStatus) liveStatus.textContent = `Destaque ${current + 1} de ${slides.length}`;
   }
   function restartSlider() {
@@ -250,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const grid = document.getElementById("home-gallery");
     if (!grid) return;
     if (!window.db) return;
-    const { data, error } = await window.db.from("gallery_images").select("title,image_url").eq("published", true).order("created_at", { ascending: false }).limit(3);
+    const { data, error } = await window.db.from("gallery_images").select("title,description,image_url").eq("published", true).order("created_at", { ascending: false }).limit(3);
     if (error) { console.warn("Prévia da galeria indisponível:", error.message); return; }
     if (!data?.length) return;
     grid.innerHTML = "";
@@ -264,8 +265,9 @@ document.addEventListener("DOMContentLoaded", () => {
       img.alt = photo.title || "Registro de pescaria";
       img.loading = "lazy";
       const label = document.createElement("span");
-      label.textContent = photo.title || "Pescaria";
-      card.append(img, label);
+      const labelText=(photo.title || "").trim() || (photo.description || "").trim();
+      if(labelText){label.textContent=labelText;card.append(img,label);}
+      else{card.classList.add("preview-photo--no-caption");card.append(img);}
       grid.append(card);
     }
   }

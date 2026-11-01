@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const image = document.getElementById("lightbox-image");
   const title = document.getElementById("lightbox-title");
   const description = document.getElementById("lightbox-description");
+  const caption = document.querySelector("#lightbox .lightbox-caption");
   let photos = [];
   let visiblePhotos = [];
   const search = document.getElementById("gallery-search");
@@ -30,8 +31,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!p) return;
     image.src = p.image_url;
     image.alt = p.title || "Foto do pesqueiro";
-    title.textContent = p.title || "Pescaria";
-    description.textContent = p.description || "";
+    const photoTitle = (p.title || "").trim();
+    const photoDescription = (p.description || "").trim();
+    title.textContent = photoTitle;
+    title.hidden = !photoTitle;
+    description.textContent = photoDescription;
+    description.hidden = !photoDescription;
+    caption.hidden = !photoTitle && !photoDescription;
     document.getElementById("lightbox-index").textContent = `${current + 1} / ${visiblePhotos.length}`;
   }
   function open(index) {
@@ -89,12 +95,19 @@ document.addEventListener("DOMContentLoaded", () => {
       img.decoding = "async";
       const overlay = document.createElement("span");
       overlay.className = "gallery-photo-caption";
-      overlay.textContent = photo.title || "Registro";
+      const labelText=(photo.title || "").trim() || (photo.description || "").trim();
+      if(labelText){
+        overlay.textContent=labelText;
+        card.append(overlay);
+      }else{
+        card.classList.add("gallery-photo--no-caption");
+      }
       const icon = document.createElement("span");
       icon.className = "gallery-photo-zoom";
       icon.setAttribute("aria-hidden", "true");
       icon.textContent = "↗";
-      card.append(img, overlay, icon);
+      card.prepend(img);
+      card.append(icon);
       card.addEventListener("click", () => open(index));
       grid.append(card);
     });

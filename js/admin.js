@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const dashboard = document.getElementById("dashboard");
   const status = document.getElementById("admin-status");
   const html = value => String(value ?? "").replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[s]);
-  const message = (text, good=false) => {status.hidden=false;status.textContent=text;status.classList.toggle("success",good);status.scrollIntoView({behavior:"smooth",block:"nearest"});};
+  const message = (text, good=false) => {status.hidden=false;status.textContent=text;status.classList.toggle("success",good);};
   const preview = (text, count=110) => (text || "").length>count ? text.slice(0,count)+"..." : (text || "");
   const sections = {horarios:"Horários",valores:"Valores",noturna:"Pesca noturna",equipamentos:"Aluguel",regras:"Regras",preservacao:"Preservação (legado: não exibida)"};
   const photosEl = document.getElementById("admin-gallery-list");
@@ -76,15 +76,68 @@ document.addEventListener("DOMContentLoaded", async () => {
     if(!photos.length){photosEl.innerHTML='<p class="admin-dim">Ainda não há fotos cadastradas.</p>';return;}
     photos.forEach(photo => {
       const div=document.createElement("article");div.className="admin-gallery-card";
-      div.innerHTML=`<img alt="" loading="lazy" src="${/^https:\/\//i.test(photo.image_url) ? html(photo.image_url) : ''}"><div class="admin-gallery-body"><h4>${html(photo.title)}</h4><p>${photo.published ? '● Publicada' : '○ Oculta'} · ${html(preview(photo.description,75))}</p><div class="admin-row-actions"><button type="button" data-action="toggle">${photo.published ? 'Ocultar' : 'Publicar'}</button><button type="button" class="danger-button" data-action="delete">Excluir</button></div></div>`;
+      const titleText=(photo.title || "").trim();
+      const descriptionText=(photo.description || "").trim();
+      const infoText=descriptionText ? ` · ${html(preview(descriptionText,75))}` : "";
+      div.innerHTML=`<img alt="Prévia da fotografia cadastrada" loading="lazy" src="${/^https:\/\//i.test(photo.image_url) ? html(photo.image_url) : ''}"><div class="admin-gallery-body"><h4>${titleText ? html(titleText) : '<span class="gallery-no-title">Foto sem título</span>'}</h4><p>${photo.published ? '● Publicada' : '○ Oculta'}${infoText}</p><div class="admin-row-actions"><button type="button" data-action="edit" aria-expanded="false">Editar texto</button><button type="button" data-action="toggle">${photo.published ? 'Ocultar' : 'Publicar'}</button><button type="button" class="danger-button" data-action="delete">Excluir</button></div></div>`;
+      const editButton=div.querySelector('[data-action="edit"]');
+      const body=div.querySelector('.admin-gallery-body');
+      const form=document.createElement("form");
+      form.className="admin-gallery-edit-form";
+      form.hidden=true;
+      const uniqueId=`gallery-edit-${String(photo.id).replace(/[^a-zA-Z0-9-]/g,"")}`;
+      form.innerHTML=`<label for="${uniqueId}-title">Título (opcional)</label><input id="${uniqueId}-title" type="text" maxlength="120" placeholder="Sem título"><label for="${uniqueId}-description">Descrição (opcional)</label><textarea id="${uniqueId}-description" rows="3" maxlength="500" placeholder="Sem descrição"></textarea><small>Deixe ambos vazios para mostrar somente a imagem no site.</small><p class="gallery-edit-error" role="alert" hidden></p><div class="admin-row-actions"><button type="submit" class="gallery-save-button">Salvar alterações</button><button type="button" data-edit-cancel>Cancelar</button></div>`;
+      const titleField=form.querySelector('input');
+      const descField=form.querySelector('textarea');
+      const errorEl=form.querySelector('.gallery-edit-error');
+      titleField.value=photo.title || "";
+      descField.value=photo.description || "";
+      body.append(form);
+      const setEditing=active=>{
+        form.hidden=!active;
+        editButton.setAttribute("aria-expanded",String(active));
+        editButton.textContent=active?"Fechar edição":"Editar texto";
+        if(active)titleField.focus();
+      };
+      editButton.addEventListener("click",()=>setEditing(form.hidden));
+      form.querySelector('[data-edit-cancel]').addEventListener("click",()=>{
+        titleField.value=photo.title || "";
+        descField.value=photo.description || "";
+        errorEl.hidden=true;
+        setEditing(false);
+        editButton.focus();
+      });
+      form.addEventListener("submit",async e=>{
+        e.preventDefault();
+        const saveButton=form.querySelector('.gallery-save-button');
+        errorEl.hidden=true;
+        saveButton.disabled=true;
+        saveButton.textContent="Salvando...";
+        try{
+          const {error:updateError}=await db.from("gallery_images").update({
+            title:titleField.value.trim(),
+            description:descField.value.trim()
+          }).eq("id",photo.id);
+          if(updateError)throw updateError;
+          await loadPhotos();
+          message("Título e descrição da fotografia atualizados com sucesso.",true);
+        }catch(err){
+          errorEl.textContent="Não foi possível salvar: "+err.message;
+          errorEl.hidden=false;
+          saveButton.disabled=false;
+          saveButton.textContent="Salvar alterações";
+        }
+      });
       div.querySelector('[data-action="toggle"]').addEventListener("click",async()=>{
         try {const {error}=await db.from("gallery_images").update({published:!photo.published}).eq("id",photo.id);if(error)throw error;await loadPhotos();message("Publicação atualizada.",true);}catch(e){message(e.message);}
       });
       div.querySelector('[data-action="delete"]').addEventListener("click",async()=>{
-        if(!confirm(`Excluir definitivamente a foto “${photo.title}”?`))return;
+        if(!confirm(`Excluir definitivamente esta foto${titleText ? ` (“${titleText}”)` : ""}?`))return;
         try {
           const {error}=await db.from("gallery_images").delete().eq("id",photo.id);if(error)throw error;
-          const {error:storageError}=await db.storage.from("galeria").remove([photo.storage_path]);
+          // Não remover objetos do Storage se a foto tiver sido cadastrada sem storage_path.
+          let storageError=null;
+          if(photo.storage_path){const result=await db.storage.from("galeria").remove([photo.storage_path]);storageError=result.error;}
           await loadPhotos();message(storageError ? "Registro excluído. Não foi possível limpar o arquivo do Storage: "+storageError.message : "Foto excluída.",!storageError);
         }catch(e){message(e.message);}
       });

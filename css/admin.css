@@ -114,3 +114,38 @@
 /* Previews show the complete image, not a cropped portion. */
 #banner-preview-box img {aspect-ratio:16/9;object-fit:contain;max-height:420px;}
 #banner-mobile-preview-box img {aspect-ratio:9/16;object-fit:contain;height:auto;max-height:360px;}
+
+/* Patch 8.6 — editor de legenda por foto */
+.admin-gallery-edit-form{display:grid;gap:10px;margin-top:17px;padding-top:17px;border-top:1px solid var(--stroke)}
+.admin-gallery-edit-form[hidden]{display:none!important}
+.admin-gallery-edit-form label{font-size:12px;font-weight:800;color:#dedee3}
+.admin-gallery-edit-form input,.admin-gallery-edit-form textarea{width:100%;padding:11px 13px;background:#0e0f12;border:1px solid var(--stroke-strong);border-radius:12px;color:#fff;outline:none;font:inherit;font-size:13px}
+.admin-gallery-edit-form textarea{resize:vertical;min-height:85px}
+.admin-gallery-edit-form input:focus-visible,.admin-gallery-edit-form textarea:focus-visible{border-color:var(--orange);box-shadow:0 0 0 2px #ff6a0033}
+.admin-gallery-edit-form small{font-size:11px;color:var(--muted);line-height:1.55}
+.admin-gallery-edit-form .gallery-edit-error{color:#ffab85;margin:0;font-size:12px}
+.admin-gallery-edit-form .gallery-edit-error[hidden]{display:none}
+.admin-gallery-edit-form .gallery-save-button{border-color:#ff6a00;background:#ff6a00;color:#101010;font-weight:800}
+.admin-gallery-edit-form button:disabled{opacity:.6;cursor:wait}
+.admin-gallery-body .gallery-no-title{font-style:italic;color:var(--muted);font-weight:500}
+
+/* Patch 8.8: confirmação visível sem deslocar a posição de rolagem */
+#admin-status.admin-status:not([hidden]){
+  position:fixed;
+  z-index:10000;
+  top:auto;
+  right:20px;
+  bottom:20px;
+  left:auto;
+  width:min(440px,calc(100vw - 40px));
+  max-height:40vh;
+  overflow:auto;
+  margin:0;
+  box-shadow:0 18px 50px #0009;
+  backdrop-filter:blur(14px);
+}
+@media(max-width:600px){
+  #admin-status.admin-status:not([hidden]){
+    right:12px;bottom:12px;width:calc(100vw - 24px);
+  }
+}

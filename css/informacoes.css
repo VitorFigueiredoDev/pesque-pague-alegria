@@ -57,7 +57,7 @@
 .recommend-grid>div{padding:18px;background:#0f1013;border-radius:16px;border:1px solid #ffffff0b}
 .recommend-grid small{display:block;color:var(--orange);font-size:10px;font-weight:800;letter-spacing:.12em;margin-bottom:9px}
 .recommend-grid strong{font-size:15px;font-family:var(--font-title)}
-.contact-section{padding-top:60px}
+.contact-section{padding-top:0}
 .contact-inner{background:radial-gradient(circle at 90% 10%,#ff6a0030,transparent 38%),var(--surface);border:1px solid var(--stroke);padding:clamp(27px,5vw,67px);display:flex;justify-content:space-between;gap:25px;overflow:hidden;position:relative}
 .contact-inner h2{font-size:clamp(35px,5vw,60px);line-height:1.03;letter-spacing:-.05em;margin:20px 0}
 .contact-inner p{max-width:550px;color:var(--muted);font-size:14px;line-height:1.7}
