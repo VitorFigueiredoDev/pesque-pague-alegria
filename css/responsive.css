@@ -5,3 +5,79 @@
 /* PATCH 8.1 — alturas do cabeçalho ajustadas após o breakpoint mobile */
 @media(max-width:800px){.site-header{height:94px}}
 @media(max-width:440px){.site-header{height:86px}}
+
+/* PATCH 9.0 | controles do slider em faixa separada da propaganda no celular. */
+@media (max-width: 767px) {
+  .hero { padding-bottom: 70px; background: #101115; }
+  .hero .hero-slide { bottom: 70px; }
+  .hero .hero-control-bar,
+  .hero:has(.hero-slide-image-only.active) .hero-control-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transform: none;
+    width: 100%;
+    max-width: none;
+    height: 70px;
+    min-height: 70px;
+    margin: 0;
+    padding: 9px 16px max(9px, env(safe-area-inset-bottom));
+    background: #111216;
+    border: 0;
+    border-top: 1px solid #ffffff21;
+    border-radius: 0;
+    gap: 12px;
+  }
+  .hero .slide-controls { gap: 11px; min-width: 0; }
+  .hero .slide-controls > button,
+  .hero:has(.hero-slide-image-only.active) .slide-controls > button {
+    flex: 0 0 39px;
+    width: 39px;
+    height: 39px;
+    background: #26272c;
+    border-color: #ffffff29;
+    border-radius: 12px;
+    color: #ffffff;
+  }
+  .hero .slider-dots { gap: 6px; align-items: center; }
+  .hero .slider-dot { min-width: 8px; }
+  .hero .hero-counter { flex: 0 0 auto; color: #d8d8db; font-size: 11px; }
+  /* Aspect-ratio no content-box, mais 70px reservados para os controles.
+     O próprio slide termina antes da faixa inferior; a arte não fica coberta. */
+  .hero:has(.hero-slide-image-only.active) {
+    box-sizing: content-box;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: var(--active-banner-aspect, 9 / 16);
+    padding-bottom: 70px;
+  }
+  .hero:has(.hero-slide-image-only.active) .hero-slide { bottom: 70px; }
+}
+
+/* PATCH 9.0 | o CTA da galeria ocupa a própria linha; nunca aperta o título. */
+@media (max-width: 800px) {
+  .gallery-preview-section .section-head-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+  .gallery-preview-section .section-head-row .section-heading {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 18px;
+  }
+  .gallery-preview-section .section-head-row > .btn {
+    display: inline-flex;
+    align-self: flex-start;
+    width: auto;
+    max-width: 100%;
+    margin: 0 0 28px;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+}
+@media (max-width: 380px) {
+  .hero .hero-control-bar { padding-inline: 10px; }
+  .gallery-preview-section .section-head-row > .btn { font-size: 13px; }
+}

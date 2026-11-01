@@ -48,3 +48,7 @@ bloco “Mais tempo. Mais história.” na aba **Informações**. Execute primei
 ## Patch 8.5 — melhorias mobile e informações
 
 No celular, banners com apenas imagem acompanham a proporção real do arquivo (se houver imagem vertical, usa-a automaticamente). O carrossel aceita deslizar com o dedo para esquerda/direita, mantendo o scroll vertical. Retirado o selo redundante de pesca noturna, removida a seção separada de preservação e integrada a orientação de passaguá às regras. Botões de contato com ícones SVG, sem setas. Sem alterações de banco de dados.
+
+## Patch 9.0 — PWA e ajustes mobile
+
+Leia `PATCH_9_0_LEIA_PRIMEIRO.md` para instalação, ícones, offline e alterações na galeria/slider. Sem SQL novo.

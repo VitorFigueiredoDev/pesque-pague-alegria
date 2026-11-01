@@ -245,3 +245,14 @@ body[data-page].page-exiting {
 .gallery-photo-caption{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25}
 .preview-photo span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .lightbox-caption[hidden],.lightbox-caption strong[hidden],.lightbox-caption p[hidden]{display:none!important}
+
+/* PATCH 9.0 | convite discreto à instalação do aplicativo no rodapé. */
+.pwa-install-strip[hidden] { display: none !important; }
+.pwa-install-strip { display: flex; justify-content: flex-start; margin: 25px 0; padding-top: 22px; border-top: 1px solid var(--stroke); }
+.pwa-install-button { display: inline-flex; gap: 11px; align-items: center; justify-content: center; min-height: 45px; border: 1px solid #ff6a0050; border-radius: 13px; color: #ffad76; background: #ff6a0012; padding: 9px 17px; font-weight: 800; font-size: 13px; transition: background .2s, border .2s; }
+.pwa-install-button:hover { background: #ff6a0025; border-color: var(--orange); }
+.pwa-install-button svg { width: 21px; height: 21px; flex: 0 0 auto; }
+.pwa-install-dialog { max-width: min(440px, calc(100% - 36px)); border: 1px solid #ffffff2d; border-radius: 25px; color: #fff; background: #17181c; padding: 28px; box-shadow: 0 25px 80px #000c; }
+.pwa-install-dialog::backdrop { background: #000b; }
+.pwa-install-dialog h2 { font-size: 25px; line-height: 1.15; margin: 0 0 15px; }
+.pwa-install-dialog p { color: #c2c3ca; line-height: 1.65; margin: 0 0 22px; }
