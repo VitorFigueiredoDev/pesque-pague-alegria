@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let current = 0;
   let timer = null;
+  let prefetchTimer = null;
+  let fallbackImagesEnabled = false;
   let slides = [];
 
   function validImage(value) {
@@ -41,10 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const slide = document.createElement("div");
     slide.className = onlyArtwork ? "hero-slide hero-slide-dynamic hero-slide-image-only" : "hero-slide hero-slide-dynamic";
-    if (!onlyArtwork) {
-      slide.style.setProperty("--banner-desktop", `url(${JSON.stringify(imgUrl)})`);
-      if (mobileImgUrl) slide.style.setProperty("--banner-mobile", `url(${JSON.stringify(mobileImgUrl)})`);
-    }
+    // Armazena URLs sem ativar CSS background: slides ocultos não devem baixar imagens.
+    slide.dataset.desktopImage = imgUrl;
+    if (mobileImgUrl) slide.dataset.mobileImage = mobileImgUrl;
     // Sem título, a arte continua acessível por uma descrição neutra do slide.
     if (onlyArtwork) {
       slide.setAttribute("aria-label", "Arte promocional do Pesque e Pague Alegria");
@@ -56,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (mobileImgUrl) {
         const source = document.createElement("source");
         source.media = "(max-width: 767px)";
-        source.srcset = mobileImgUrl;
+        source.dataset.srcset = mobileImgUrl;
         picture.append(source);
       }
       const image = document.createElement("img");
@@ -66,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
       image.decoding = "async";
       image.loading = "lazy";
       image.fetchPriority = "low";
-      image.src = imgUrl;
+      image.dataset.src = imgUrl;
       image.addEventListener("load", () => {
         if (slide.classList.contains("active")) updateMobileArtRatio();
       });
@@ -123,13 +124,58 @@ document.addEventListener("DOMContentLoaded", () => {
         ? `${image.naturalWidth} / ${image.naturalHeight}`
         : fallback);
   }
+  function loadSlideImage(slide, priority = false) {
+    if (!slide) return;
+    if (!slide.classList.contains("hero-slide-dynamic")) {
+      if (fallbackImagesEnabled && slide.dataset.fallbackImage && !slide.dataset.imageStarted) {
+        const url = validImage(slide.dataset.fallbackImage);
+        if (url) slide.style.backgroundImage = `url(${JSON.stringify(url)})`;
+        slide.dataset.imageStarted = "true";
+      }
+      return;
+    }
+    const img = slide.querySelector(".banner-art img");
+    if (img) {
+      const source = slide.querySelector(".banner-art source[data-srcset]");
+      if (source) {
+        source.srcset = source.dataset.srcset;
+        delete source.dataset.srcset;
+      }
+      // Definir prioridade antes de atribuir src para a requisição correta.
+      img.loading = "eager";
+      img.fetchPriority = priority ? "high" : "low";
+      if (img.dataset.src) {
+        img.src = img.dataset.src;
+        delete img.dataset.src;
+      }
+    } else if (!slide.dataset.imageStarted) {
+      // Slides com texto usam background CSS: só ativamos ao exibir/antecipar.
+      slide.style.setProperty("--banner-desktop", `url(${JSON.stringify(slide.dataset.desktopImage)})`);
+      if (slide.dataset.mobileImage) {
+        slide.style.setProperty("--banner-mobile", `url(${JSON.stringify(slide.dataset.mobileImage)})`);
+      }
+      slide.dataset.imageStarted = "true";
+    }
+  }
+  function scheduleNextImage() {
+    clearTimeout(prefetchTimer);
+    if (slides.length < 2 || document.hidden) return;
+    // O próximo banner já está pronto antes da rotação de 7s, sem baixar todos de uma vez.
+    prefetchTimer = setTimeout(() => {
+      if (!document.hidden && slides.length > 1) loadSlideImage(slides[(current + 1) % slides.length]);
+    }, 4500);
+  }
+  function activateFallbackImages() {
+    // Na indisponibilidade do Supabase, apenas a foto de reserva visível é baixada.
+    fallbackImagesEnabled = true;
+    loadSlideImage(slides[current]);
+  }
   function showSlide(index, announce = false) {
     if (!slides.length) return;
     current = (index + slides.length) % slides.length;
+    loadSlideImage(slides[current], true);
     slides.forEach((slide, i) => {
       const active = i === current;
-      const art=slide.querySelector('.banner-art img');
-      if(active && art){art.loading='eager';art.fetchPriority='high';}
       slide.classList.toggle("active", active);
       slide.setAttribute("aria-hidden", String(!active));
       slide.querySelectorAll("a").forEach(a => a.tabIndex = active ? 0 : -1);
@@ -142,6 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
     counter.textContent = `${String(current + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
 
     if (announce && liveStatus) liveStatus.textContent = `Destaque ${current + 1} de ${slides.length}`;
+    scheduleNextImage();
   }
   function restartSlider() {
     clearInterval(timer);
@@ -153,11 +200,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!hero || !dotsContainer || !counter || !next || !previous) return;
     slides = [...hero.querySelectorAll(".hero-slide")];
     current = 0;
-    // Banner ativo primeiro; os demais são carregados sob demanda pelo navegador.
-    slides.forEach((slide,i)=>{
-      const img=slide.querySelector('.banner-art img');
-      if(img){img.loading=i===0?'eager':'lazy';img.fetchPriority=i===0?'high':'low';}
-    });
+    // Nenhum secundário baixa antes de ser exibido ou da pré-carga do próximo.
+    clearTimeout(prefetchTimer);
     dotsContainer.replaceChildren();
     slides.forEach((_, index) => {
       const dot = document.createElement("button");
@@ -180,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
       hero.classList.remove('hero-loading');
       hero.removeAttribute('aria-busy');
     }, 5500);
-    if (!window.db) {clearTimeout(loadingTimeout);hero.classList.remove("hero-loading");hero.removeAttribute("aria-busy");return;}
+    if (!window.db) {clearTimeout(loadingTimeout);activateFallbackImages();hero.classList.remove("hero-loading");hero.removeAttribute("aria-busy");return;}
     try {
       const query = select => window.db.from("home_banners")
         .select(select)
@@ -192,9 +236,9 @@ document.addEventListener("DOMContentLoaded", () => {
         ({ data, error } = await query("title,description,image_url,button_text,button_url,display_order"));
       }
       if (error) throw error;
-      if (!data?.length) { hero.classList.remove("hero-loading");hero.removeAttribute("aria-busy");return; }
+      if (!data?.length) { activateFallbackImages();hero.classList.remove("hero-loading");hero.removeAttribute("aria-busy");return; }
       const newSlides = data.map(makeBanner).filter(Boolean);
-      if (!newSlides.length) {hero.classList.remove("hero-loading");hero.removeAttribute("aria-busy");return;}
+      if (!newSlides.length) {activateFallbackImages();hero.classList.remove("hero-loading");hero.removeAttribute("aria-busy");return;}
       // Só troca os slides padrão depois que os banners válidos estiverem preparados.
       hero.querySelectorAll(".hero-slide").forEach(el => el.remove());
       const vertical = hero.querySelector(".hero-vertical");
@@ -203,6 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
       hero.classList.remove("hero-loading");
       hero.removeAttribute("aria-busy");
     } catch (error) {
+      activateFallbackImages();
       hero.classList.remove("hero-loading");
       hero.removeAttribute("aria-busy");
       console.warn("Banners indisponíveis; exibindo slides padrão:", error);
@@ -280,13 +325,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (error) { console.warn("Prévia da galeria indisponível:", error.message); return; }
     if (!data?.length) return;
     grid.innerHTML = "";
+    const lazyGallery = "IntersectionObserver" in window ? new IntersectionObserver(entries => {
+      entries.forEach(({target,isIntersecting}) => {
+        if (!isIntersecting) return;
+        target.src = target.dataset.src;
+        delete target.dataset.src;
+        lazyGallery.unobserve(target);
+      });
+    }, {rootMargin:"350px 0px"}) : null;
     for (const photo of data) {
       if (!/^https:\/\//i.test(photo.image_url)) continue;
       const card = document.createElement("a");
       card.className = "preview-photo";
       card.href = "pages/galeria.html";
       const img = document.createElement("img");
-      img.src = photo.image_url;
+      if (lazyGallery) {img.dataset.src = photo.image_url;lazyGallery.observe(img);}
+      else img.src = photo.image_url;
       img.alt = photo.title || "Registro de pescaria";
       img.loading = "lazy";
       img.decoding = "async";

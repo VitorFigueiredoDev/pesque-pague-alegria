@@ -4,7 +4,7 @@
     "home_features_description", "home_night_description", "home_gallery_description", "home_visit_description",
     "home_night_title_first", "home_night_title_second", "home_night_image_caption",
     "home_night_image_url", "home_night_button_text", "home_night_button_url", "home_night_badge",
-    "contact_whatsapp", "contact_instagram", "contact_maps"
+    "contact_whatsapp", "contact_instagram", "contact_maps", "site_logo_url"
   ]);
   const safeUrl = (raw, kind) => {
     if (!raw || typeof raw !== "string") return null;
@@ -22,6 +22,7 @@
     contact_maps: fallback.maps || ""
   });
   function apply(settings) {
+    window.applySiteLogo?.(safeUrl(settings.site_logo_url,"site_logo_url") || "");
     document.querySelectorAll("[data-site-setting]").forEach(node => {
       const key = node.dataset.siteSetting;
       if (allowed.has(key) && typeof settings[key] === "string" && settings[key].trim()) node.textContent = settings[key].trim();
@@ -36,10 +37,19 @@
       if(el && typeof settings[key]==="string" && settings[key].trim())el.textContent=settings[key].trim();
     });
     const art=document.getElementById("home-night-art");
-    const artUrl=safeUrl(settings.home_night_image_url,"home_night_image_url");
-    if(art && artUrl){
-      art.style.backgroundImage=`linear-gradient(0deg,#0b0b0bba,transparent 60%),url(${JSON.stringify(artUrl)})`;
-      art.setAttribute("aria-label","Imagem da pesca noturna do Pesque e Pague Alegria");
+    const artUrl=safeUrl(settings.home_night_image_url,"home_night_image_url") ||
+      "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1200&auto=format&fit=crop&q=80";
+    if (art) {
+      const setImage = () => {
+        art.style.backgroundImage=`linear-gradient(0deg,#0b0b0bba,transparent 60%),url(${JSON.stringify(artUrl)})`;
+      };
+      if ("IntersectionObserver" in window) {
+        const watcher = new IntersectionObserver(entries => {
+          if(entries.some(entry => entry.isIntersecting)){watcher.disconnect();setImage();}
+        }, {rootMargin:"400px 0px"});
+        watcher.observe(art);
+      } else setImage();
+      if(settings.home_night_image_url)art.setAttribute("aria-label","Imagem da pesca noturna do Pesque e Pague Alegria");
     }
     const badge=document.getElementById("home-night-pill");
     if(badge && settings.home_night_badge?.trim()){

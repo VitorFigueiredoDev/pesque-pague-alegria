@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const optimized=await window.AlegriaImages.optimize(file,'logo');
       const uploadFile=optimized.file;
       path = `logos/site-${Date.now()}-${Math.random().toString(36).slice(2,10)}.${window.AlegriaImages.ext(uploadFile)}`;
-      const {error:uploadError} = await db.storage.from('galeria').upload(path,uploadFile,{contentType:uploadFile.type,upsert:false});
+      const {error:uploadError} = await db.storage.from('galeria').upload(path,uploadFile,{contentType:uploadFile.type,cacheControl:"31536000",upsert:false});
       if(uploadError) throw uploadError;
       const url = db.storage.from('galeria').getPublicUrl(path).data.publicUrl;
       const {error:saveError} = await db.from('site_content_settings').upsert({key,value:url,updated_at:new Date().toISOString()},{onConflict:'key'});

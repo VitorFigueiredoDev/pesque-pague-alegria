@@ -25,6 +25,11 @@
     } catch(e) { console.warn('Logo personalizada indisponível:', e.message); }
   }
   window.applySiteLogo = apply;
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
-  else load();
+  // As páginas públicas já consultam site_content_settings em lote.
+  // O admin, que não carrega o script público, mantém sua própria consulta.
+  const hasPublicSettings = [...document.scripts].some(script => /\/js\/site-settings\.js(?:\?|$)/.test(script.src));
+  if (!hasPublicSettings) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
+    else load();
+  }
 })();

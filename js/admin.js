@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const optimized=await window.AlegriaImages.optimize(file,'gallery');
       const uploadFile=optimized.file;
       path=`galeria/${Date.now()}-${Math.random().toString(36).slice(2,12)}.${window.AlegriaImages.ext(uploadFile)}`;
-      const {error:uploadError}=await db.storage.from("galeria").upload(path,uploadFile,{contentType:uploadFile.type,upsert:false});
+      const {error:uploadError}=await db.storage.from("galeria").upload(path,uploadFile,{contentType:uploadFile.type,cacheControl:"31536000",upsert:false});
       if(uploadError)throw uploadError;
       const {data:url}=db.storage.from("galeria").getPublicUrl(path);
       const {error:insertError}=await db.from("gallery_images").insert({title:document.getElementById("gallery-title").value.trim(),description:document.getElementById("gallery-description").value.trim(),image_url:url.publicUrl,storage_path:path,published:document.getElementById("gallery-published").checked});
@@ -350,7 +350,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const optimized=await window.AlegriaImages.optimize(file,'partner');
         const uploadFile=optimized.file;
         uploadedPath=`parceiros/${Date.now()}-${Math.random().toString(36).slice(2,12)}.${window.AlegriaImages.ext(uploadFile)}`;
-        const {error:uploadError}=await db.storage.from("galeria").upload(uploadedPath,uploadFile,{contentType:uploadFile.type,upsert:false});
+        const {error:uploadError}=await db.storage.from("galeria").upload(uploadedPath,uploadFile,{contentType:uploadFile.type,cacheControl:"31536000",upsert:false});
         if(uploadError)throw uploadError;
         const {data:publicData}=db.storage.from("galeria").getPublicUrl(uploadedPath);
         logo_url=publicData.publicUrl;
@@ -483,7 +483,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const optimized=await window.AlegriaImages.optimize(file,'banner');
         const uploadFile=optimized.file;
         const uploadPath=`banners/${Date.now()}-${Math.random().toString(36).slice(2,12)}.${window.AlegriaImages.ext(uploadFile)}`;
-        const {error:uploadError}=await db.storage.from("galeria").upload(uploadPath,uploadFile,{contentType:uploadFile.type,upsert:false});
+        const {error:uploadError}=await db.storage.from("galeria").upload(uploadPath,uploadFile,{contentType:uploadFile.type,cacheControl:"31536000",upsert:false});
         if(uploadError)throw uploadError;
         uploadPaths.push(uploadPath);
         image_url=db.storage.from("galeria").getPublicUrl(uploadPath).data.publicUrl;
@@ -492,7 +492,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const optimized=await window.AlegriaImages.optimize(mobileFile,'bannerMobile');
         const uploadFile=optimized.file;
         const mobilePath=`banners/mobile-${Date.now()}-${Math.random().toString(36).slice(2,12)}.${window.AlegriaImages.ext(uploadFile)}`;
-        const {error:uploadError}=await db.storage.from("galeria").upload(mobilePath,uploadFile,{contentType:uploadFile.type,upsert:false});
+        const {error:uploadError}=await db.storage.from("galeria").upload(mobilePath,uploadFile,{contentType:uploadFile.type,cacheControl:"31536000",upsert:false});
         if(uploadError)throw uploadError;
         uploadPaths.push(mobilePath);
         mobile_image_url=db.storage.from("galeria").getPublicUrl(mobilePath).data.publicUrl;

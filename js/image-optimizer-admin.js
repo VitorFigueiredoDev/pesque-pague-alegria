@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(!optimized.changed)return {saved:0,changed:false};
     const prefix={gallery:'galeria',banner:'banners',bannerMobile:'banners',logo:'logos',night:'destaques'}[task.kind];
     const path=`${prefix}/otimizado-91-${Date.now()}-${Math.random().toString(36).slice(2,12)}.${window.AlegriaImages.ext(optimized.file)}`;
-    const {error:uploadError}=await db.storage.from('galeria').upload(path,optimized.file,{contentType:optimized.file.type,upsert:false});
+    const {error:uploadError}=await db.storage.from('galeria').upload(path,optimized.file,{contentType:optimized.file.type,cacheControl:"31536000",upsert:false});
     if(uploadError)throw uploadError;
     const newUrl=db.storage.from('galeria').getPublicUrl(path).data.publicUrl;
     // A condição de URL evita pisar em uma edição feita durante a execução.
