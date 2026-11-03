@@ -1,3 +1,2 @@
 User-agent: *
 Disallow: /admin/
-# Após definir o domínio, execute scripts/preparar_publicacao.py para incluir Sitemap.

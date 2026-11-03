@@ -40,8 +40,8 @@
     border-radius: 12px;
     color: #ffffff;
   }
-  .hero .slider-dots { gap: 6px; align-items: center; }
-  .hero .slider-dot { min-width: 8px; }
+  .hero .slider-dots { gap: 2px; align-items: center; }
+  .hero .slider-dot, .hero .slider-dot.active { min-width: 32px; width: 32px; height: 36px; }
   .hero .hero-counter { flex: 0 0 auto; color: #d8d8db; font-size: 11px; }
   /* Aspect-ratio no content-box, mais 70px reservados para os controles.
      O próprio slide termina antes da faixa inferior; a arte não fica coberta. */
@@ -60,19 +60,20 @@
   .gallery-preview-section .section-head-row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0;
+    gap: 20px;
+    margin-bottom: 48px;
   }
   .gallery-preview-section .section-head-row .section-heading {
     width: 100%;
     max-width: 100%;
-    margin-bottom: 18px;
+    margin-bottom: 0;
   }
   .gallery-preview-section .section-head-row > .btn {
     display: inline-flex;
     align-self: flex-start;
     width: auto;
     max-width: 100%;
-    margin: 0 0 28px;
+    margin: 0;
     text-align: center;
     overflow-wrap: anywhere;
   }

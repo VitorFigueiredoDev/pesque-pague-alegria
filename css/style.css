@@ -264,3 +264,38 @@ body[data-page].page-exiting {
 
 /* Impede download das três imagens de fallback enquanto o conteúdo dinâmico carrega. */
 .hero.hero-loading .hero-slide{display:none}
+
+
+/* Indicadores pequenos visualmente, mas com áreas de toque acessíveis (>= 24 × 24 px). */
+.slider-dots { display: flex; align-items: center; gap: 2px; }
+.slider-dot, .slider-dot.active {
+  flex: 0 0 32px;
+  width: 32px;
+  min-width: 32px;
+  height: 36px;
+  min-height: 36px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 8px;
+  transition: none;
+}
+.slider-dot::before {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #a3a4aa;
+  transition: width .25s ease, background .25s ease;
+}
+.slider-dot.active::before { width: 22px; background: var(--orange); }
+.slider-dot:hover::before { background: #ff9947; }
+.slider-dot:focus-visible { outline: 2px solid #fff; outline-offset: 0; }
+/* Contraste do rodapé acima de 4.5:1, mantendo visual cinza claro no tema escuro. */
+.site-footer .footer-bottom { color: #a2a4ad; }
+/* O CTA fica destacado do início da grade de fotos, em vez de encostar no card. */
+.gallery-preview-section .section-head-row { margin-bottom: 48px; }
+.gallery-preview-section .section-head-row .section-heading { margin-bottom: 0; }

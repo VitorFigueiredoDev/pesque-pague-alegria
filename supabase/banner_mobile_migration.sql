@@ -1,4 +1,4 @@
--- PATCH 8.4 — imagem vertical opcional por banner.
+-- Migração opcional para bases antigas: imagem vertical por banner.
 -- Execute UMA VEZ no SQL Editor do projeto Supabase já existente.
 -- Não exclui dados, nem muda autenticação ou políticas RLS.
 ALTER TABLE public.home_banners

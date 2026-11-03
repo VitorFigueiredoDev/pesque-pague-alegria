@@ -1,8 +1,8 @@
-/* Pesque e Pague Alegria | PWA 9.0
+/* Pesque e Pague Alegria | PWA
    O conteúdo Supabase é sempre obtido online e não é interceptado aqui.
    A área administrativa também fica fora do cache para segurança e atualização.
 */
-const CACHE_NAME = 'pesque-alegria-public-v9-2-0';
+const CACHE_NAME = 'pesque-alegria-public-v9-3-0';
 const LOCAL_SHELL = [
   './offline.html',
   './assets/icons/app-icon-192.png',

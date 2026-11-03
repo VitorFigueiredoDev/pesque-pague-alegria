@@ -24,7 +24,6 @@
   button.type = 'button';
   button.className = 'pwa-install-button';
   button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M12 7v8m-3-3 3 3 3-3"/></svg><span>Instalar aplicativo</span>';
-  button.setAttribute('aria-label','Adicionar o Pesque e Pague Alegria à tela inicial');
   strip.append(button);
   footer.before(strip);
 
