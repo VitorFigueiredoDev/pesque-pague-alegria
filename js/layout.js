@@ -44,7 +44,7 @@
     ["peixes", "Peixes", href("pages/peixes.html")]
   ];
   const mark = `<svg viewBox="0 0 48 48" width="29" height="29" fill="none" aria-hidden="true"><path d="M5 24c10-13 25-15 35 0-10 15-25 13-35 0Z" stroke="currentColor" stroke-width="3.3" stroke-linejoin="round"/><circle cx="30" cy="22" r="2.3" fill="currentColor"/><path d="m6 24-4-8v16l4-8ZM15 24c5 5 9 7 15 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-  const brand = `<a class="brand" href="${href("index.html")}" aria-label="Pesque e Pague Alegria — início"><span class="brand-mark">${mark}</span><img class="brand-logo-uploaded" alt="" hidden><span class="brand-name"><small>PESQUE E PAGUE</small><strong>ALEGRIA<span>.</span></strong></span></a>`;
+  const brand = `<a class="brand" href="${href("index.html")}" aria-label="Pesque e Pague Alegria — início"><span class="brand-mark">${mark}</span><img class="brand-logo-uploaded" width="130" height="65" alt="" hidden><span class="brand-name"><small>PESQUE E PAGUE</small><strong>ALEGRIA<span>.</span></strong></span></a>`;
   const navItem = ([id, label, url]) => `<a href="${url}" ${id===current?'class="active" aria-current="page"':''}>${label}</a>`;
   // Desktop: Início | Galeria — LOGO — Peixes | Informações.
   // Mobile: todos os links ficam em um único menu acessível.

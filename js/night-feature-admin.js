@@ -70,8 +70,10 @@ document.addEventListener("DOMContentLoaded", () => {
     try{
       let imageUrl=url;
       if(file){
-        uploadedPath=`destaques/noturna-${Date.now()}-${Math.random().toString(36).slice(2,11)}.${allowed[file.type]}`;
-        const {error:uploadError}=await db.storage.from("galeria").upload(uploadedPath,file,{contentType:file.type,upsert:false});
+        const optimized=await window.AlegriaImages.optimize(file,'night');
+        const uploadFile=optimized.file;
+        uploadedPath=`destaques/noturna-${Date.now()}-${Math.random().toString(36).slice(2,11)}.${window.AlegriaImages.ext(uploadFile)}`;
+        const {error:uploadError}=await db.storage.from("galeria").upload(uploadedPath,uploadFile,{contentType:uploadFile.type,upsert:false});
         if(uploadError)throw uploadError;
         imageUrl=db.storage.from("galeria").getPublicUrl(uploadedPath).data.publicUrl;
       }

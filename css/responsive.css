@@ -81,3 +81,14 @@
   .hero .hero-control-bar { padding-inline: 10px; }
   .gallery-preview-section .section-head-row > .btn { font-size: 13px; }
 }
+
+/* Patch 9.1: reserva de espaço do primeiro banner durante consulta ao Supabase.
+   Evita que a Home encolha de ~800px para ~232px após o carregamento. */
+@media(max-width:767px){
+  .hero.hero-loading {box-sizing:content-box;height:auto;min-height:0;aspect-ratio:16 / 9;padding-bottom:70px;
+    background:radial-gradient(ellipse at center,#2b241e 0%,#141518 58%,#090a0c 100%);}
+  .hero.hero-loading .hero-slide {visibility:hidden;opacity:0;}
+}
+
+/* Enquanto o banner carrega, imagens de reserva não precisam consumir rede. */
+@media(max-width:767px){.hero.hero-loading .hero-slide{display:none;}}

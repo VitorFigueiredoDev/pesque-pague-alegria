@@ -2,7 +2,7 @@
    O conteúdo Supabase é sempre obtido online e não é interceptado aqui.
    A área administrativa também fica fora do cache para segurança e atualização.
 */
-const CACHE_NAME = 'pesque-alegria-public-v9-0-1';
+const CACHE_NAME = 'pesque-alegria-public-v9-1-1';
 const LOCAL_SHELL = [
   './offline.html',
   './assets/icons/app-icon-192.png',

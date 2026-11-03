@@ -30,9 +30,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const file = fileInput.files?.[0];
     if(!file || file.type !== 'image/png' || file.size > 2*1024*1024) return say('Selecione um PNG válido de até 2 MB.',true);
     save.disabled = true; save.textContent = 'Enviando...';
-    const path = `logos/site-${Date.now()}-${Math.random().toString(36).slice(2,10)}.png`;
+    let path=null;
     try {
-      const {error:uploadError} = await db.storage.from('galeria').upload(path,file,{contentType:'image/png',upsert:false});
+      const optimized=await window.AlegriaImages.optimize(file,'logo');
+      const uploadFile=optimized.file;
+      path = `logos/site-${Date.now()}-${Math.random().toString(36).slice(2,10)}.${window.AlegriaImages.ext(uploadFile)}`;
+      const {error:uploadError} = await db.storage.from('galeria').upload(path,uploadFile,{contentType:uploadFile.type,upsert:false});
       if(uploadError) throw uploadError;
       const url = db.storage.from('galeria').getPublicUrl(path).data.publicUrl;
       const {error:saveError} = await db.from('site_content_settings').upsert({key,value:url,updated_at:new Date().toISOString()},{onConflict:'key'});
